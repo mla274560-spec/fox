@@ -37,7 +37,7 @@
       "group": "소형 섬",
       "points": 850,
       "time": "4시간 5분",
-      "icon": "assets/icon/라비온.png",
+      "icon": "assets/icons/rabion.png",
       "rewards": [
         {
           "item": "음산한 열쇠",

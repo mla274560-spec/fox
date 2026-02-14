@@ -542,7 +542,7 @@ collapseBtn.addEventListener('click', () => {
 
 async function boot(){
   try{
-    const res = await fetch('./data.json', {cache:'no-store'});
+    const res = await fetch('.data.json', {cache:'no-store'});
     DATA = await res.json();
     document.getElementById('pageTitle').textContent = DATA.meta?.title || '섬/대륙 보상표 (데이터형)';
     document.getElementById('pageSub').textContent = (DATA.meta?.notes || 'data.json 수정 → 자동 반영');

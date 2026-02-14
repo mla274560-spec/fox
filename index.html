@@ -226,6 +226,20 @@
     .nav-item:hover{background: var(--panel2); border-color: var(--border);}
     .nav-item.active{background: rgba(99,102,241,.18); border-color: rgba(99,102,241,.45);}
     .nav-folder.collapsed .nav-folder-items{display:none;}
+    
+    .nav-thumb{
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      object-fit: cover;
+      flex: 0 0 auto;
+    }
+    .nav-thumb.placeholder{
+      display:block;
+    }
+
     .nav-folder.collapsed .nav-caret{transform: rotate(-90deg);}
 
     /* modal */
@@ -351,6 +365,7 @@ function render(){
       <div class="nav-folder-items">
         ${shown.map(loc => `
           <a href="#${loc.id}" data-id="${loc.id}" class="nav-item">
+            ${loc.icon ? `<img class="nav-thumb" src="${loc.icon}" alt="${esc(loc.name)}" loading="lazy" />` : `<div class="nav-thumb placeholder"></div>`}
             <div class="meta">
               <div class="name">${esc(loc.name)}</div>
               <div class="cat">${esc(loc.group)} · ${esc(loc.points)}P · ${esc(loc.time)}</div>

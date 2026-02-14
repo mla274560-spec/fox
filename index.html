@@ -250,7 +250,28 @@
     .modal-bar .t{font-weight:900}
     .modal-body{padding:14px}
     .modal-body img{width:100%;height:auto;border-radius:14px;background:white;display:block}
-  </style>
+  
+.reward-table{
+  width:100%;
+  border-collapse: collapse;
+}
+.reward-table th,
+.reward-table td{
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+  text-align: left;
+  vertical-align: top;
+  white-space: nowrap;
+}
+.reward-table td:first-child{
+  white-space: normal;
+}
+.reward-table thead th{
+  background: rgba(255,255,255,.04);
+  font-weight: 700;
+}
+
+</style>
 </head>
 <body>
   <div class="topbar" id="top">
@@ -483,15 +504,15 @@ function render(){
 function locationCard(loc){
   const rewardsRaw = (loc.rewards || []).slice();
 
-  const norm = rewardsRaw.map(r => {
+  const rows = rewardsRaw.map(r => {
     const name = (r.name ?? r.item ?? '').toString();
-    const count = (r.count ?? r.qty);
+    const count = (r.count ?? r.qty ?? '').toString();
     const rateRaw = (r.rate ?? r.prob ?? '');
     const rateNum = parseFloat(String(rateRaw).replace('%','')) || 0;
     return { name, count, rateRaw: String(rateRaw).replace('%',''), rateNum };
   }).filter(x => x.name);
 
-  norm.sort((a,b)=> b.rateNum - a.rateNum);
+  rows.sort((a,b)=> b.rateNum - a.rateNum);
 
   return `
     <section class="card" id="${loc.id}">
@@ -502,12 +523,29 @@ function locationCard(loc){
         </div>
       </div>
 
-      <div class="reward-text-list" style="padding:14px 16px;">
-        ${norm.length ? norm.map(r => {
-          const rate = esc(r.rateRaw) + '%';
-          const count = (r.count !== undefined && r.count !== null && String(r.count).trim() !== '') ? ` x${esc(r.count)}` : '';
-          return `<div class="reward-text-row">${esc(r.name)}${count} <span class="muted" style="float:right;">${rate}</span></div>`;
-        }).join('') : `<div class="muted">보상 데이터가 없습니다.</div>`}
+      <div style="padding:14px; overflow:auto;">
+        <table class="reward-table">
+          <thead>
+            <tr>
+              <th style="min-width:220px;">보상</th>
+              <th style="min-width:80px;">개수</th>
+              <th style="min-width:90px;">확률</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${
+              rows.length
+                ? rows.map(r => `
+                    <tr>
+                      <td>${esc(r.name)}</td>
+                      <td>${esc(r.count || '-')}</td>
+                      <td>${esc(r.rateRaw)}%</td>
+                    </tr>
+                  `).join('')
+                : `<tr><td colspan="3" class="muted">보상 데이터가 없습니다.</td></tr>`
+            }
+          </tbody>
+        </table>
       </div>
     </section>
   `;

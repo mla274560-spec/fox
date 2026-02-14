@@ -242,14 +242,6 @@
 
     .nav-folder.collapsed .nav-caret{transform: rotate(-90deg);}
 
-    
-    .reward-text-row{
-      padding: 8px 0;
-      border-bottom: 1px solid rgba(255,255,255,.06);
-      line-height: 1.25rem;
-    }
-    .reward-text-row:last-child{ border-bottom: none; }
-    
     /* modal */
     .modal{position:fixed;inset:0;z-index:1000;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(0,0,0,.72);backdrop-filter:blur(8px)}
     .modal.open{display:flex}
@@ -489,11 +481,17 @@ function render(){
 
 
 function locationCard(loc){
-  const rewards = (loc.rewards || []).slice().sort((a,b) => {
-    const ar = parseFloat(String(a.rate).replace('%','')) || 0;
-    const br = parseFloat(String(b.rate).replace('%','')) || 0;
-    return br - ar;
-  });
+  const rewardsRaw = (loc.rewards || []).slice();
+
+  const norm = rewardsRaw.map(r => {
+    const name = (r.name ?? r.item ?? '').toString();
+    const count = (r.count ?? r.qty);
+    const rateRaw = (r.rate ?? r.prob ?? '');
+    const rateNum = parseFloat(String(rateRaw).replace('%','')) || 0;
+    return { name, count, rateRaw: String(rateRaw).replace('%',''), rateNum };
+  }).filter(x => x.name);
+
+  norm.sort((a,b)=> b.rateNum - a.rateNum);
 
   return `
     <section class="card" id="${loc.id}">
@@ -505,8 +503,8 @@ function locationCard(loc){
       </div>
 
       <div class="reward-text-list" style="padding:14px 16px;">
-        ${rewards.length ? rewards.map(r => {
-          const rate = esc(String(r.rate).replace('%','')) + '%';
+        ${norm.length ? norm.map(r => {
+          const rate = esc(r.rateRaw) + '%';
           const count = (r.count !== undefined && r.count !== null && String(r.count).trim() !== '') ? ` x${esc(r.count)}` : '';
           return `<div class="reward-text-row">${esc(r.name)}${count} <span class="muted" style="float:right;">${rate}</span></div>`;
         }).join('') : `<div class="muted">보상 데이터가 없습니다.</div>`}

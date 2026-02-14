@@ -242,6 +242,14 @@
 
     .nav-folder.collapsed .nav-caret{transform: rotate(-90deg);}
 
+    
+    .reward-text-row{
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+      line-height: 1.25rem;
+    }
+    .reward-text-row:last-child{ border-bottom: none; }
+    
     /* modal */
     .modal{position:fixed;inset:0;z-index:1000;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(0,0,0,.72);backdrop-filter:blur(8px)}
     .modal.open{display:flex}
@@ -481,59 +489,27 @@ function render(){
 
 
 function locationCard(loc){
-  const rewards = Array.isArray(loc.rewards) ? [...loc.rewards] : [];
-  rewards.sort((a,b) => probToNum(b.prob) - probToNum(a.prob)); // default: probability desc
+  const rewards = (loc.rewards || []).slice().sort((a,b) => {
+    const ar = parseFloat(String(a.rate).replace('%','')) || 0;
+    const br = parseFloat(String(b.rate).replace('%','')) || 0;
+    return br - ar;
+  });
 
   return `
-    <section class="card" id="${esc(loc.id)}">
+    <section class="card" id="${loc.id}">
       <div class="card-head">
         <div class="card-title">
           <div class="h">${esc(loc.name)}</div>
           <div class="s muted">${esc(loc.group)} · ${esc(loc.points)}P · ${esc(loc.time)}</div>
         </div>
-        <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
-          ${loc.icon ? `<div class="btn" data-zoom="${esc(loc.id)}">아이콘 확대</div>` : ''}
-          <a class="btn" href="#top" onclick="window.scrollTo({top:0,behavior:'smooth'}); return false;">맨 위</a>
-        </div>
       </div>
 
-      <div class="grid2">
-        <div class="mini">
-          <div class="mini-head">
-            <div class="t">보상 목록</div>
-            <div class="muted">확률 내림차순</div>
-          </div>
-          <div class="mini-body" style="overflow:auto; max-height:560px;">
-            <table>
-              <thead>
-                <tr>
-                  <th style="min-width:220px;">보상</th>
-                  <th style="min-width:70px;">개수</th>
-                  <th style="min-width:70px;">확률</th>
-                </tr>
-              </thead>
-              <tbody>
-                ${rewards.map(r => `
-                  <tr>
-                    <td>${esc(r.item)}</td>
-                    <td>${esc(r.qty)}</td>
-                    <td>${esc(r.prob)}</td>
-                  </tr>
-                `).join('')}
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <div class="mini">
-          <div class="mini-head">
-            <div class="t">원본 캡처</div>
-            <div class="muted">${loc.icon ? '참고용 이미지' : '이미지 없음'}</div>
-          </div>
-          <div class="mini-body">
-            ${loc.icon ? `<img class="icon" src="${esc(loc.icon)}" alt="${esc(loc.name)}" />` : `<div class="muted">icon 경로를 data.json에 추가하면 여기 표시됩니다.</div>`}
-          </div>
-        </div>
+      <div class="reward-text-list" style="padding:14px 16px;">
+        ${rewards.length ? rewards.map(r => {
+          const rate = esc(String(r.rate).replace('%','')) + '%';
+          const count = (r.count !== undefined && r.count !== null && String(r.count).trim() !== '') ? ` x${esc(r.count)}` : '';
+          return `<div class="reward-text-row">${esc(r.name)}${count} <span class="muted" style="float:right;">${rate}</span></div>`;
+        }).join('') : `<div class="muted">보상 데이터가 없습니다.</div>`}
       </div>
     </section>
   `;

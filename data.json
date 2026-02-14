@@ -1,7 +1,8 @@
 {
   "meta": {
-    "title": "맛동산 위키",
+    "title": "섬/대륙 보상표 (데이터형)",
     "updated": "2026-02-14",
+    "notes": "data.json만 수정하면 자동으로 화면이 갱신됩니다."
   },
   "groups": [
     {
@@ -176,7 +177,7 @@
       "group": "소형 섬",
       "points": 850,
       "time": "4시간 5분",
-      "icon": "assets/icons/usilla.png",
+      "icon": "assets/icons/yusilla.png",
       "rewards": [
         {
           "item": "루키 열쇠 (거래 불가)",
@@ -261,7 +262,7 @@
       "group": "소형 섬",
       "points": 850,
       "time": "4시간 5분",
-      "icon": "assets/icons/toroen.png",
+      "icon": "assets/icons/toren.png",
       "rewards": [
         {
           "item": "봉인된 풍요의 팔찌 (거래 불가)",
@@ -426,7 +427,7 @@
       "group": "일반 대륙",
       "points": 14000,
       "time": "24시간",
-      "icon": "assets/icons/arseia.png",
+      "icon": "assets/icons/arsea.png",
       "rewards": [
         {
           "item": "스킬 아크 (x10)",
@@ -536,7 +537,7 @@
       "group": "대형 대륙",
       "points": 30000,
       "time": "48시간",
-      "icon": "assets/icons/ligaraseon.png",
+      "icon": "assets/icons/rikarseon.png",
       "rewards": [
         {
           "item": "전설 열쇠",

@@ -228,16 +228,18 @@
     .nav-folder.collapsed .nav-folder-items{display:none;}
     
     .nav-thumb{
-      object-fit: cover;
-      width: 50px;
-      height: 50px;
+      object-fit: contain;
+      width: 34px;
+      height: 34px;
       border-radius: 10px;
       border: 1px solid rgba(255,255,255,.14);
       background: rgba(255,255,255,.06);
-      object-fit: cover
+      object-fit: cover;
       flex: 0 0 auto;
     }
-  
+    .nav-thumb.placeholder{
+      display:block;
+    }
 
     .nav-folder.collapsed .nav-caret{transform: rotate(-90deg);}
 

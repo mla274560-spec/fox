@@ -228,13 +228,12 @@
     .nav-folder.collapsed .nav-folder-items{display:none;}
     
     .nav-thumb{
+      background: transparent;
+      border: none;
       object-fit: contain;
       width: 34px;
       height: 34px;
-      border-radius: 10px;
-      border: 1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.06);
-      object-fit: cover;
+      border-radius: 10px;      object-fit: cover;
       flex: 0 0 auto;
     }
     .nav-thumb.placeholder{
@@ -397,46 +396,7 @@ function render(){
   }));
 
   // Summary card + location cards
-  contentEl.innerHTML = `
-    <section class="card" id="summary">
-      <div class="card-head">
-        <div class="card-title">
-          <div class="h">개요</div>
-          <div class="s muted">분류 · 필요 포인트 · 소요 시간</div>
-        </div>
-        <div style="display:flex; gap:10px; flex-wrap:wrap;">
-          <span class="badge">업데이트: ${esc(DATA.meta?.updated || '')}</span>
-          <span class="badge">항목 수: ${summaryRows.length}</span>
-          <a class="btn" href="#top" onclick="window.scrollTo({top:0,behavior:'smooth'}); return false;">맨 위</a>
-        </div>
-      </div>
-      <div style="padding:14px; overflow:auto;">
-        <table>
-          <thead>
-            <tr>
-              <th style="min-width:110px;">분류</th>
-              <th style="min-width:140px;">대륙/섬</th>
-              <th style="min-width:110px;">필요 포인트</th>
-              <th style="min-width:110px;">소요 시간</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${summaryRows.map(r => `
-              <tr>
-                <td>${esc(r.group)}</td>
-                <td><a href="#${(DATA.locations||[]).find(x=>x.name===r.name)?.id || ''}" style="text-decoration:underline;text-decoration-color:rgba(255,255,255,.25)">${esc(r.name)}</a></td>
-                <td>${esc(r.points)}</td>
-                <td>${esc(r.time)}</td>
-              </tr>
-            `).join('')}
-          </tbody>
-        </table>
-      </div>
-    </section>
-    ${shown.map(loc => locationCard(loc)).join('')}
-  `;
-
-  // Zoom wiring
+  contentEl.innerHTML = `${shown.map(loc => locationCard(loc)).join('')}`;// Zoom wiring
   Array.from(document.querySelectorAll('[data-zoom]')).forEach(btn => {
     btn.addEventListener('click', () => {
       const id = btn.getAttribute('data-zoom');

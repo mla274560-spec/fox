@@ -427,7 +427,7 @@
       "group": "일반 대륙",
       "points": 14000,
       "time": "24시간",
-      "icon": "assets/icons/areia.png",
+      "icon": "assets/icons/arseia.png",
       "rewards": [
         {
           "item": "스킬 아크 (x10)",

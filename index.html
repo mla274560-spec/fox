@@ -272,26 +272,80 @@
 }
 
 
-/* ===== 계산기 모드 애니메이션 ===== */
-#wikiContent,
-#goldCalcSection{
-  transition: opacity .35s ease, transform .35s ease;
-}
+    /* ===== 상단 탭 (위키/계산기) ===== */
+    .mode-tabs{
+      position:sticky;
+      top:64px; /* topbar 높이에 맞춤(대략) */
+      z-index:49;
+      backdrop-filter:blur(14px);
+      background:rgba(11,15,23,.72);
+      border-bottom:1px solid var(--border);
+    }
+    .mode-tabs-inner{
+      max-width:var(--max);
+      margin:0 auto;
+      padding:10px 18px;
+      display:flex;
+      gap:10px;
+      align-items:center;
+    }
+    .mode-tab{
+      padding:9px 14px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background:var(--panel);
+      color:rgba(255,255,255,.88);
+      font-size:13px;
+      font-weight:800;
+      cursor:pointer;
+      user-select:none;
+      transition: transform .25s ease, opacity .25s ease, background .25s ease, border-color .25s ease;
+    }
+    .mode-tab:hover{background:var(--panel2)}
+    .mode-tab.active{
+      background:rgba(99,102,241,.22);
+      border-color:rgba(99,102,241,.45);
+    }
 
-.fade-out{
-  opacity:0;
-  transform: translateY(10px);
-  pointer-events:none;
-}
+    /* ===== 계산기 전용 컨테이너 ===== */
+    #calcOnlyWrap{
+      max-width:var(--max);
+      margin:0 auto;
+      padding:18px;
+      display:none;
+    }
+    #calcOnlyWrap .card{max-width:720px;margin:0 auto}
+    #calcOnlyWrap input{
+      width:100%;
+      margin-top:10px;
+      padding:14px 16px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.18);
+      background:rgba(255,255,255,.06);
+      color:var(--text);
+      font-size:16px;
+      outline:none;
+    }
 
-.calc-mode{
-  background: radial-gradient(1200px 600px at 50% -10%, #1e1b4b 0%, #0b0f17 60%) !important;
-  transition: background .5s ease;
-}
+    /* ===== 모드 전환 애니메이션 + 배경 ===== */
+    body.calc-mode{
+      background: radial-gradient(1200px 600px at 50% -10%, #1e1b4b 0%, #0b0f17 60%) fixed;
+      transition: background .5s ease;
+    }
+    body.calc-mode .layout{display:none;}
+    body.calc-mode #calcOnlyWrap{display:block;}
+
+    .fade-in{
+      animation: fadeInUp .32s ease both;
+    }
+    @keyframes fadeInUp{
+      from{opacity:0; transform: translateY(10px);}
+      to{opacity:1; transform: translateY(0);}
+    }
 
 </style>
 </head>
-<body id="bodyRoot">
+<body>
   <div class="topbar" id="top">
     <div class="topbar-inner">
       <div class="brand">
@@ -310,11 +364,32 @@
     </div>
   </div>
 
-  
-  <!-- 계산기 상단 탭 -->
-  <div id="calcTabs" style="position:sticky;top:64px;z-index:40;background:rgba(11,15,23,.9);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.08);padding:10px 18px;display:flex;gap:10px;">
-    <div id="tabWiki" style="padding:8px 16px;border-radius:999px;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:white;cursor:pointer;">항해 위키</div>
-    <div id="tabCalc" style="padding:8px 16px;border-radius:999px;background:rgba(255,255,255,.06);cursor:pointer;">골드 계산기</div>
+  <div class="mode-tabs" id="modeTabs">
+    <div class="mode-tabs-inner">
+      <div class="mode-tab active" id="tabWiki">항해 위키</div>
+      <div class="mode-tab" id="tabCalc">골드 계산기</div>
+    </div>
+  </div>
+
+  <!-- 계산기 전용 화면 (위키 렌더와 독립) -->
+  <div id="calcOnlyWrap">
+    <section class="card fade-in" id="goldCalcCard">
+      <div class="card-head">
+        <div class="card-title">
+          <div class="h">💰 골드 보내기 계산기</div>
+          <div class="s muted">입력 즉시 수수료 5% 자동 계산</div>
+        </div>
+        <span class="badge">수수료 5%</span>
+      </div>
+      <div style="padding:18px;max-width:520px;">
+        <label class="muted">보낼 골드</label>
+        <input type="number" id="goldInput" placeholder="예: 100000" inputmode="numeric" />
+        <div style="margin-top:18px;">
+          <div style="font-size:15px;">수수료 (5%) : <b id="feeAmount" style="color:#f87171;">0</b></div>
+          <div style="margin-top:8px;font-size:18px;font-weight:900;">받는 골드 : <b id="finalAmount" style="color:#34d399;">0</b></div>
+        </div>
+      </div>
+    </section>
   </div>
 
   <div class="layout">
@@ -329,31 +404,7 @@
       <div class="nav" id="nav"></div>
     </aside>
 
-    <main class="content">
-      <!-- 계산기 섹션 (render가 건드리지 않음) -->
-      <section class="card" id="goldCalcSection" style="display:none;max-width:720px;margin:0 auto 24px auto;">
-        <div class="card-head">
-          <div class="card-title">
-            <div class="h">💰 골드 보내기 계산기</div>
-            <div class="s muted">입력 즉시 수수료 5% 자동 계산</div>
-          </div>
-        </div>
-        <div style="padding:18px;max-width:420px;">
-          <label class="muted">보낼 골드</label>
-          <input type="number" id="goldInput"
-            style="width:100%;margin-top:10px;padding:14px 16px;border-radius:14px;
-    border:1px solid rgba(255,255,255,.18);
-    background:rgba(255,255,255,.06);
-    color:white;font-size:16px;
-    outline:none;transition:all .2s ease;">
-          <div style="margin-top:18px;">
-            <div style="font-size:15px;">수수료 (5%) : <b id="feeAmount" style="color:#f87171;">0</b></div>
-            <div style="margin-top:8px;font-size:18px;font-weight:700;">받는 골드 : <b id="finalAmount" style="color:#34d399;">0</b></div>
-          </div>
-        </div>
-      </section>
-
-      <div id="wikiContent">
+    <main class="content" id="content">
       <div class="card">
         <div class="card-head">
           <div class="card-title">
@@ -655,68 +706,53 @@ async function boot(){
 }
 boot();
 
-
-// ===== 계산기 탭 기능 =====
-document.addEventListener('DOMContentLoaded', () => {
+// ===== 위키/계산기 모드 전환 =====
+(function(){
   const tabWiki = document.getElementById('tabWiki');
   const tabCalc = document.getElementById('tabCalc');
-  const calcSection = document.getElementById('goldCalcSection');
-  const sidebar = document.querySelector('.sidebar');
-  const layout = document.querySelector('.layout');
+  const calcWrap = document.getElementById('calcOnlyWrap');
+  const bodyRoot = document.body;
 
-  tabWiki.onclick = () => {
-    tabWiki.style.background = 'linear-gradient(135deg,#6366f1,#8b5cf6)';
-    tabCalc.style.background = 'rgba(255,255,255,.06)';
+  function setMode(mode){
+    if(mode === 'calc'){
+      tabCalc.classList.add('active');
+      tabWiki.classList.remove('active');
+      bodyRoot.classList.add('calc-mode');
+      // 애니메이션 리셋
+      const card = document.getElementById('goldCalcCard');
+      card.classList.remove('fade-in');
+      void card.offsetWidth; // reflow
+      card.classList.add('fade-in');
+      window.scrollTo({top:0,behavior:'smooth'});
+    }else{
+      tabWiki.classList.add('active');
+      tabCalc.classList.remove('active');
+      bodyRoot.classList.remove('calc-mode');
+      window.scrollTo({top:0,behavior:'smooth'});
+    }
+  }
 
-    calcSection.classList.add('fade-out');
+  tabWiki.addEventListener('click', ()=> setMode('wiki'));
+  tabCalc.addEventListener('click', ()=> setMode('calc'));
 
-    setTimeout(()=>{
-      calcSection.style.display = 'none';
-      calcSection.classList.remove('fade-out');
-
-      const wiki = document.getElementById('wikiContent');
-      wiki.style.display = 'block';
-      document.getElementById('bodyRoot').classList.remove('calc-mode');
-    },300);
-
-    sidebar.style.display = 'block';
-    layout.style.gridTemplateColumns = '300px 1fr';
-  };
-
-  tabCalc.onclick = () => {
-    tabCalc.style.background = 'linear-gradient(135deg,#6366f1,#8b5cf6)';
-    tabWiki.style.background = 'rgba(255,255,255,.06)';
-
-    const wiki = document.getElementById('wikiContent');
-    wiki.classList.add('fade-out');
-
-    setTimeout(()=>{
-      wiki.style.display = 'none';
-      wiki.classList.remove('fade-out');
-
-      calcSection.style.display = 'block';
-      document.getElementById('bodyRoot').classList.add('calc-mode');
-    },300);
-
-    sidebar.style.display = 'none';
-    layout.style.gridTemplateColumns = '1fr';
-    window.scrollTo({top:0,behavior:'smooth'});
-  };
-
-  const input = document.getElementById("goldInput");
-  input?.addEventListener("input", function(){
+  // 계산기 로직
+  const input = document.getElementById('goldInput');
+  input.addEventListener('input', function(){
     const gold = parseFloat(this.value);
-    if(isNaN(gold) || gold <= 0){
-      document.getElementById("feeAmount").textContent = "0";
-      document.getElementById("finalAmount").textContent = "0";
+    if(!Number.isFinite(gold) || gold <= 0){
+      document.getElementById('feeAmount').textContent = '0';
+      document.getElementById('finalAmount').textContent = '0';
       return;
     }
     const fee = gold * 0.05;
     const finalGold = gold - fee;
-    document.getElementById("feeAmount").textContent = fee.toLocaleString();
-    document.getElementById("finalAmount").textContent = finalGold.toLocaleString();
+    document.getElementById('feeAmount').textContent = fee.toLocaleString();
+    document.getElementById('finalAmount').textContent = finalGold.toLocaleString();
   });
-});
+
+  // 기본 모드는 위키
+  setMode('wiki');
+})();
 
 </script>
 </body>

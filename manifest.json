@@ -1,0 +1,143 @@
+{
+  "meta": {
+    "title": "맛동산",
+    "updated": "2026-02-14",
+    "notes": "  "
+  },
+  "groups": [
+    {
+      "key": "소형 섬",
+      "label": "소형 섬",
+      "default_points": 850,
+      "default_time": "4시간 5분"
+    },
+    {
+      "key": "중형 섬",
+      "label": "중형 섬",
+      "default_points": 5000,
+      "default_time": "12시간"
+    },
+    {
+      "key": "일반 대륙",
+      "label": "일반 대륙",
+      "default_points": 14000,
+      "default_time": "24시간"
+    },
+    {
+      "key": "대형 대륙",
+      "label": "대형 대륙",
+      "default_points": 30000,
+      "default_time": "48시간"
+    }
+  ],
+  "locations": [
+    {
+      "id": "rabion",
+      "name": "라비온",
+      "group": "소형 섬",
+      "points": 850,
+      "time": "4시간 5분",
+      "icon": "assets/icons/rabion.png",
+      "file": "rabion.json"
+    },
+    {
+      "id": "keroa",
+      "name": "케로아",
+      "group": "소형 섬",
+      "points": 850,
+      "time": "4시간 5분",
+      "icon": "assets/icons/keroa.png",
+      "file": "keroa.json"
+    },
+    {
+      "id": "morein",
+      "name": "모레인",
+      "group": "소형 섬",
+      "points": 850,
+      "time": "4시간 5분",
+      "icon": "assets/icons/morein.png",
+      "file": "morein.json"
+    },
+    {
+      "id": "yusilla",
+      "name": "유실라",
+      "group": "소형 섬",
+      "points": 850,
+      "time": "4시간 5분",
+      "icon": "assets/icons/yusilla.png",
+      "file": "yusilla.json"
+    },
+    {
+      "id": "belderik",
+      "name": "벨데릭",
+      "group": "소형 섬",
+      "points": 850,
+      "time": "4시간 5분",
+      "icon": "assets/icons/belderik.png",
+      "file": "belderik.json"
+    },
+    {
+      "id": "toren",
+      "name": "토르엔",
+      "group": "소형 섬",
+      "points": 850,
+      "time": "4시간 5분",
+      "icon": "assets/icons/toren.png",
+      "file": "toren.json"
+    },
+    {
+      "id": "kaien",
+      "name": "카이엔",
+      "group": "중형 섬",
+      "points": 5000,
+      "time": "12시간",
+      "icon": "assets/icons/kaien.png",
+      "file": "kaien.json"
+    },
+    {
+      "id": "belloa",
+      "name": "벨로아",
+      "group": "중형 섬",
+      "points": 5000,
+      "time": "12시간",
+      "icon": "assets/icons/belloa.png",
+      "file": "belloa.json"
+    },
+    {
+      "id": "arsea",
+      "name": "아르세아",
+      "group": "일반 대륙",
+      "points": 14000,
+      "time": "24시간",
+      "icon": "assets/icons/arsea.png",
+      "file": "arsea.json"
+    },
+    {
+      "id": "kairent",
+      "name": "카이렌트",
+      "group": "일반 대륙",
+      "points": 14000,
+      "time": "24시간",
+      "icon": "assets/icons/kairent.png",
+      "file": "kairent.json"
+    },
+    {
+      "id": "rikarseon",
+      "name": "리카르세온",
+      "group": "대형 대륙",
+      "points": 30000,
+      "time": "48시간",
+      "icon": "assets/icons/rikarseon.png",
+      "file": "rikarseon.json"
+    },
+    {
+      "id": "kairosent",
+      "name": "카이로센트",
+      "group": "대형 대륙",
+      "points": 30000,
+      "time": "48시간",
+      "icon": "assets/icons/kairosent.png",
+      "file": "kairosent.json"
+    }
+  ]
+}

@@ -593,7 +593,7 @@ collapseBtn.addEventListener('click', () => {
 async function loadIsland(id, file){
   try{
     selectedId = id;
-    const res = await fetch(urlJoin('data/' + file), {cache:'no-store'});
+    const res = await fetch(urlJoin('data/' + file) + '?v=' + Date.now(), { cache: 'no-store' });
     DATA = await res.json();
     // set page title/sub for convenience
     const loc = (DATA.locations||[])[0];
@@ -609,7 +609,7 @@ async function loadIsland(id, file){
 
 async function boot(){
   try{
-    let res = await fetch(urlJoin('data/manifest.json'), {cache:'no-store'});
+    res = await fetch(urlJoin('data/manifest.json') + '?v=' + Date.now(), { cache: 'no-store' });
     if(!res.ok){
       // fallback: in case you placed manifest in repo root
       res = await fetch(urlJoin('manifest.json'), {cache:'no-store'});

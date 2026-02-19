@@ -91,7 +91,7 @@ body{margin:0;font-family:system-ui;background:var(--bg);color:var(--text);}
 let DATA=null;
 
 async function boot(){
-  const res=await fetch('./data.json',{cache:'no-store'});
+  const res=await fetch('data.json',{cache:'no-store'});
   DATA=await res.json();
   render();
 }

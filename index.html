@@ -1,610 +1,152 @@
 <!doctype html>
 <html lang="ko">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>섬/대륙 보상표 (데이터형)</title>
-  <style>
-    :root{
-      --bg:#0b0f17;
-      --panel:rgba(255,255,255,.06);
-      --panel2:rgba(255,255,255,.10);
-      --text:rgba(255,255,255,.92);
-      --muted:rgba(255,255,255,.65);
-      --border:rgba(255,255,255,.12);
-      --shadow:0 10px 30px rgba(0,0,0,.35);
-      --radius:18px;
-      --max:1160px;
-      --accent:rgba(99,102,241,.90);
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans KR",Arial,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
-      background: radial-gradient(1200px 700px at 10% 0%, #162036 0%, var(--bg) 55%) fixed;
-      color:var(--text);
-    }
-    a{color:inherit;text-decoration:none}
-    .topbar{
-      position:sticky;top:0;z-index:50;
-      backdrop-filter:blur(14px);
-      background:rgba(11,15,23,.72);
-      border-bottom:1px solid var(--border);
-    }
-    .topbar-inner{
-      max-width:var(--max);
-      margin:0 auto;
-      padding:14px 18px;
-      display:flex;
-      align-items:center;
-      gap:12px;
-      flex-wrap:wrap;
-    }
-    .brand{display:flex;flex-direction:column;gap:2px;min-width:240px}
-    .brand .title{font-weight:900;letter-spacing:-0.02em}
-    .brand .sub{font-size:12px;color:var(--muted)}
-    .search{
-      flex:1;
-      min-width:220px;
-      display:flex;gap:10px;align-items:center;
-      background:var(--panel);
-      border:1px solid var(--border);
-      border-radius:999px;
-      padding:10px 12px 10px 14px;
-    }
-    .search input{
-      width:100%;
-      background:transparent;border:0;outline:none;color:var(--text);font-size:14px;
-    }
-    .pill{
-      display:inline-flex;gap:8px;align-items:center;
-      padding:8px 10px;border-radius:999px;
-      border:1px solid var(--border);
-      background:var(--panel);
-      color:var(--muted);
-      font-size:12px;
-      cursor:pointer;
-      user-select:none;
-    }
-    .pill.active{
-      background:rgba(99,102,241,.20);
-      border-color:rgba(99,102,241,.45);
-      color:rgba(255,255,255,.92);
-    }
-    .layout{
-      max-width:var(--max);
-      margin:0 auto;
-      padding:18px;
-      display:grid;
-      grid-template-columns:300px 1fr;
-      gap:18px;
-    }
-    @media (max-width:980px){
-      .layout{grid-template-columns:1fr}
-    }
-    .sidebar{
-      position:sticky;top:86px;align-self:start;
-      border:1px solid var(--border);
-      background:var(--panel);
-      border-radius:var(--radius);
-      overflow:hidden;
-      box-shadow:var(--shadow);
-    }
-    @media (max-width:980px){.sidebar{position:relative;top:0}}
-    .side-head{
-      padding:14px 14px 10px;
-      border-bottom:1px solid var(--border);
-      display:flex;justify-content:space-between;align-items:center;gap:10px;
-    }
-    .side-head .label{font-weight:800}
-    .side-head .hint{font-size:12px;color:var(--muted)}
-    .nav{max-height:calc(100vh - 160px);overflow:auto;padding:10px}
-    .nav a{
-      display:flex;gap:10px;
-      padding:10px;border-radius:14px;border:1px solid transparent;
-      color:rgba(255,255,255,.86);
-    }
-    .nav a:hover{background:var(--panel2);border-color:var(--border)}
-    .nav a.active{background:rgba(99,102,241,.18);border-color:rgba(99,102,241,.45)}
-    .nav .meta{display:flex;flex-direction:column;gap:2px;min-width:0}
-    .nav .name{font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .nav .cat{font-size:12px;color:var(--muted)}
-    .content{display:flex;flex-direction:column;gap:14px}
-    .card{
-      border:1px solid var(--border);
-      background:var(--panel);
-      border-radius:var(--radius);
-      overflow:hidden;
-      box-shadow:var(--shadow);
-    }
-    .card-head{
-      padding:14px 16px;
-      display:flex;justify-content:space-between;align-items:center;gap:12px;
-      border-bottom:1px solid var(--border);
-      background:rgba(255,255,255,.03);
-      flex-wrap:wrap;
-    }
-    .card-title{display:flex;flex-direction:column;gap:2px;min-width:0}
-    .card-title .h{font-weight:900;letter-spacing:-0.02em}
-    .card-title .s{font-size:12px;color:var(--muted)}
-    .badge{
-      display:inline-flex;align-items:center;gap:8px;
-      padding:8px 10px;border-radius:999px;
-      border:1px solid var(--border);
-      background:rgba(255,255,255,.05);
-      font-size:12px;color:rgba(255,255,255,.88);
-    }
-    .btn{
-      padding:8px 10px;border-radius:12px;
-      border:1px solid var(--border);
-      background:rgba(255,255,255,.05);
-      color:rgba(255,255,255,.88);
-      font-size:12px;
-      cursor:pointer;
-      user-select:none;
-      display:inline-flex;align-items:center;gap:8px;
-    }
-    .btn:hover{background:rgba(255,255,255,.08)}
-    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:14px}
-    @media (max-width:980px){.grid2{grid-template-columns:1fr}}
-    .mini{
-      border:1px solid var(--border);
-      background:rgba(255,255,255,.04);
-      border-radius:16px;
-      overflow:hidden;
-    }
-    .mini-head{
-      padding:10px 12px;
-      border-bottom:1px solid var(--border);
-      display:flex;justify-content:space-between;align-items:center;gap:10px;
-    }
-    .mini-head .t{font-weight:900}
-    .mini-body{padding:12px}
-    .icon{
-      width:100%;
-      border-radius:14px;
-      background:white;
-      display:block;
-    }
-    table{
-      width:100%;
-      border-collapse:collapse;
-      font-size:13px;
-    }
-    th,td{
-      padding:10px 8px;
-      border-bottom:1px solid rgba(255,255,255,.10);
-      text-align:left;
-      vertical-align:top;
-    }
-    th{
-      color:rgba(255,255,255,.78);
-      font-weight:800;
-      position:sticky;top:0;
-      background:rgba(15,19,28,.75);
-      backdrop-filter:blur(10px);
-    }
-    .k{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono",monospace}
-    .muted{color:var(--muted)}
-    .footer{
-      max-width:var(--max);
-      margin:0 auto;
-      padding:0 18px 26px;
-      color:var(--muted);
-      font-size:12px;
-    }
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>섬/대륙 보상표 (데이터형)</title>
 
-    /* Folder-style nav */
-    .nav-folder{margin: 4px 0 10px;}
-    .nav-folder-btn{
-      width:100%;
-      display:flex;
-      align-items:center;
-      gap:10px;
-      padding:10px 10px;
-      border-radius:14px;
-      border:1px solid var(--border);
-      background: rgba(255,255,255,.04);
-      color: rgba(255,255,255,.90);
-      cursor:pointer;
-      user-select:none;
-    }
-    .nav-folder-btn:hover{background: var(--panel2);}
-    .nav-caret{width:16px; text-align:center; opacity:.9;}
-    .nav-folder-title{font-weight:900;}
-    .nav-folder-count{
-      margin-left:auto;
-      font-size:12px;
-      color: rgba(255,255,255,.75);
-      padding:2px 8px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.05);
-    }
-    .nav-folder-items{padding:8px 0 0 18px;}
-    .nav-item{display:flex; gap:10px; padding:10px; border-radius:14px; border:1px solid transparent; color:rgba(255,255,255,.86);}
-    .nav-item:hover{background: var(--panel2); border-color: var(--border);}
-    .nav-item.active{background: rgba(99,102,241,.18); border-color: rgba(99,102,241,.45);}
-    .nav-folder.collapsed .nav-folder-items{display:none;}
-    
-    .nav-thumb{
-      background: transparent;
-      border: none;
-      object-fit: contain;
-      width: 34px;
-      height: 34px;
-      border-radius: 10px;      object-fit: cover;
-      flex: 0 0 auto;
-    }
-    .nav-thumb.placeholder{
-      display:block;
-    }
-
-    .nav-folder.collapsed .nav-caret{transform: rotate(-90deg);}
-
-    /* modal */
-    .modal{position:fixed;inset:0;z-index:1000;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(0,0,0,.72);backdrop-filter:blur(8px)}
-    .modal.open{display:flex}
-    .modal-inner{width:min(1200px,98vw);max-height:92vh;overflow:auto;border-radius:18px;border:1px solid rgba(255,255,255,.14);background:rgba(15,19,28,.96);box-shadow:0 20px 70px rgba(0,0,0,.55)}
-    .modal-bar{position:sticky;top:0;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.12);background:rgba(15,19,28,.92)}
-    .modal-bar .t{font-weight:900}
-    .modal-body{padding:14px}
-    .modal-body img{width:100%;height:auto;border-radius:14px;background:white;display:block}
-  
-.reward-table{
+<style>
+:root{
+  --bg:#0b0f17;
+  --panel:rgba(255,255,255,.06);
+  --text:rgba(255,255,255,.92);
+  --muted:rgba(255,255,255,.65);
+  --border:rgba(255,255,255,.12);
+  --radius:18px;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans KR",Arial;
+  background:#0b0f17;
+  color:var(--text);
+}
+a{color:inherit;text-decoration:none}
+.layout{display:grid;grid-template-columns:280px 1fr}
+.sidebar{
+  border-right:1px solid var(--border);
+  padding:20px;
+}
+.nav-item{
+  display:block;
+  padding:10px;
+  border-radius:12px;
+  margin-bottom:6px;
+  background:rgba(255,255,255,.04);
+}
+.nav-item:hover{background:rgba(255,255,255,.08)}
+.content{padding:30px}
+.card{
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  margin-bottom:30px;
+  overflow:hidden;
+}
+.card-head{
+  padding:16px;
+  border-bottom:1px solid var(--border);
+  background:rgba(255,255,255,.03);
+}
+.card-body{padding:20px}
+.calc-input{
   width:100%;
-  border-collapse: collapse;
+  padding:12px;
+  margin-top:8px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,.2);
+  background:rgba(255,255,255,.05);
+  color:white;
+  font-size:16px;
 }
-.reward-table th,
-.reward-table td{
-  padding: 10px 12px;
-  border-bottom: 1px solid rgba(255,255,255,.08);
-  text-align: left;
-  vertical-align: top;
-  white-space: nowrap;
-}
-.reward-table td:first-child{
-  white-space: normal;
-}
-.reward-table thead th{
-  background: rgba(255,255,255,.04);
-  font-weight: 700;
-}
-
+.result{margin-top:20px;font-size:16px}
 </style>
 </head>
+
 <body>
-  <div class="topbar" id="top">
-    <div class="topbar-inner">
-      <div class="brand">
-        <div class="title" id="pageTitle">섬/대륙 보상표 (데이터형)</div>
-        <div class="sub" id="pageSub">data.json 수정 → 자동 반영</div>
-      </div>
-      <div class="search" title="이름/아이템/분류 검색">
-        <span class="k">⌕</span>
-        <input id="q" placeholder="예: 소형 섬 / 카이로센트 / 인챈트북 ..." autocomplete="off" />
-      </div>
-      <div class="pill active" data-filter="all">전체</div>
-      <div class="pill" data-filter="소형 섬">소형</div>
-      <div class="pill" data-filter="중형 섬">중형</div>
-      <div class="pill" data-filter="일반 대륙">일반</div>
-      <div class="pill" data-filter="대형 대륙">대형</div>
-    </div>
-  </div>
 
-  <div class="layout">
-    <aside class="sidebar">
-      <div class="side-head">
-        <div>
-          <div class="label">목차</div>
-          <div class="hint">클릭하면 해당 카드로 이동</div>
-        </div>
-        <div class="btn" id="collapseNav">접기</div>
-      </div>
-      <div class="nav" id="nav"></div>
-    </aside>
+<div class="layout">
 
-    <main class="content" id="content">
-      <div class="card">
-        <div class="card-head">
-          <div class="card-title">
-            <div class="h">로드 중…</div>
-            <div class="s muted">data.json을 읽고 있습니다</div>
-          </div>
-        </div>
-      </div>
-    </main>
-  </div>
+<aside class="sidebar">
+  <h3>목차</h3>
+  <div id="nav"></div>
+</aside>
 
-  <div class="footer">
-    <div class="muted">
-      운영 팁: 이 폴더를 그대로 디스코드에 올리기보다는, 깃허브 Pages / Netlify / Vercel 같은 곳에 올리면 링크로 공유가 편합니다.
-      로컬에서 열 때는 <span class="k">index.html</span>을 더블클릭하면 됩니다(브라우저가 JSON 로드를 막으면 아래 README 방법 참고).
-    </div>
-  </div>
+<main class="content" id="content">
+  로딩 중...
+</main>
 
-  <div class="modal" id="modal" role="dialog" aria-modal="true">
-    <div class="modal-inner">
-      <div class="modal-bar">
-        <div class="t" id="modalTitle">확대보기</div>
-        <div style="display:flex; gap:10px;">
-          <a class="btn" id="openNew" target="_blank" rel="noopener">새 창</a>
-          <div class="btn" id="closeModal">닫기</div>
-        </div>
-      </div>
-      <div class="modal-body">
-        <img id="modalImg" alt="zoom" />
-      </div>
-    </div>
-  </div>
+</div>
 
 <script>
 let DATA = null;
-let filter = 'all';
-let query = '';
 
-const navEl = document.getElementById('nav');
-const contentEl = document.getElementById('content');
-const qEl = document.getElementById('q');
-const pills = Array.from(document.querySelectorAll('.pill'));
-
-const modal = document.getElementById('modal');
-const modalImg = document.getElementById('modalImg');
-const modalTitle = document.getElementById('modalTitle');
-const openNew = document.getElementById('openNew');
-
-function esc(s){ return (s??'').toString().replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
-function probToNum(p){
-  const m = (p??'').toString().replace('%','').trim();
-  const n = Number(m);
-  return Number.isFinite(n) ? n : -1;
-}
-
-function matchLocation(loc){
-  const hay = (loc.name + ' ' + loc.group + ' ' + (loc.rewards||[]).map(r=>r.item).join(' ')).toLowerCase();
-  const q = query.trim().toLowerCase();
-  const okQ = !q || hay.includes(q);
-  const okF = (filter === 'all') || loc.group.includes(filter);
-  return okQ && okF;
+async function boot(){
+  const res = await fetch('./data.json', {cache:'no-store'});
+  DATA = await res.json();
+  render();
 }
 
 function render(){
-  if(!DATA) return;
-  const shown = (DATA.locations||[]).filter(matchLocation);
 
-  // --- NAV (folder-style) ---
-  const navEmpty = `<div style="padding:12px;color:rgba(255,255,255,.7)">검색 결과가 없어요.</div>`;
-  const navCount = shown.length;
-
-  navEl.innerHTML = navCount ? `
-    <div class="nav-folder" data-folder="sailing">
-      <button class="nav-folder-btn" type="button" aria-expanded="true">
-        <span class="nav-caret">▾</span>
-        <span class="nav-folder-title">항해</span>
-        <span class="nav-folder-count">${navCount}</span>
-      </button>
-      <div class="nav-folder-items">
-        ${shown.map(loc => `
-          <a href="#${loc.id}" data-id="${loc.id}" class="nav-item">
-            ${loc.icon ? `<img class="nav-thumb" src="${loc.icon}" alt="${esc(loc.name)}" loading="lazy" />` : `<div class="nav-thumb placeholder"></div>`}
-            <div class="meta">
-              <div class="name">${esc(loc.name)}</div>
-              <div class="cat">${esc(loc.group)} · ${esc(loc.points)}P · ${esc(loc.time)}</div>
-            </div>
-          </a>
-        `).join('')}
-      </div>
-    </div>
-  ` : navEmpty;
-  // Folder toggle (must be wired after nav HTML is rendered)
-  const folder = navEl.querySelector('[data-folder="sailing"]');
-  if (folder) {
-    const btn = folder.querySelector('.nav-folder-btn');
-    const caret = folder.querySelector('.nav-caret');
-    if (btn) {
-      btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        const collapsed = folder.classList.toggle('collapsed');
-        btn.setAttribute('aria-expanded', (!collapsed).toString());
-        if (caret) caret.textContent = collapsed ? '▸' : '▾';
-      });
-    }
-  }
-
-
-  const summaryRows = (DATA.locations||[]).map(loc => ({
-    group: loc.group, name: loc.name, points: loc.points, time: loc.time
-  }));
-
-  // Summary card + location cards
-  contentEl.innerHTML = `
-    <section class="card" id="summary">
-      <div class="card-head">
-        <div class="card-title">
-          <div class="h">개요</div>
-          <div class="s muted">분류 · 필요 포인트 · 소요 시간</div>
-        </div>
-        <div style="display:flex; gap:10px; flex-wrap:wrap;">
-          <span class="badge">업데이트: ${esc(DATA.meta?.updated || '')}</span>
-          <span class="badge">항목 수: ${summaryRows.length}</span>
-          <a class="btn" href="#top" onclick="window.scrollTo({top:0,behavior:'smooth'}); return false;">맨 위</a>
-        </div>
-      </div>
-      <div style="padding:14px; overflow:auto;">
-        <table>
-          <thead>
-            <tr>
-              <th style="min-width:110px;">분류</th>
-              <th style="min-width:140px;">대륙/섬</th>
-              <th style="min-width:110px;">필요 포인트</th>
-              <th style="min-width:110px;">소요 시간</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${summaryRows.map(r => `
-              <tr>
-                <td>${esc(r.group)}</td>
-                <td><a href="#${(DATA.locations||[]).find(x=>x.name===r.name)?.id || ''}" style="text-decoration:underline;text-decoration-color:rgba(255,255,255,.25)">${esc(r.name)}</a></td>
-                <td>${esc(r.points)}</td>
-                <td>${esc(r.time)}</td>
-              </tr>
-            `).join('')}
-          </tbody>
-        </table>
-      </div>
-    </section>
-    ${shown.map(loc => locationCard(loc)).join('')}
+  nav.innerHTML = `
+    <a href="#goldcalc" class="nav-item">골드보내기 계산기</a>
+    ${DATA.locations.map(loc => `
+      <a href="#${loc.id}" class="nav-item">${loc.name}</a>
+    `).join('')}
   `;
 
-  // Zoom wiring
-  Array.from(document.querySelectorAll('[data-zoom]')).forEach(btn => {
-    btn.addEventListener('click', () => {
-      const id = btn.getAttribute('data-zoom');
-      const loc = (DATA.locations||[]).find(x => x.id === id);
-      if(!loc) return;
-      const src = loc.icon || '';
-      modalTitle.textContent = `${loc.name} · ${loc.group}`;
-      modalImg.src = src;
-      openNew.href = src;
-      modal.classList.add('open');
-    });
-  });
-
-  // Active nav highlight on scroll
-  const links = Array.from(navEl.querySelectorAll('a'));
-  const byId = new Map(links.map(a => [a.dataset.id, a]));
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if(e.isIntersecting){
-        links.forEach(x => x.classList.remove('active'));
-        const a = byId.get(e.target.id);
-        if(a) a.classList.add('active');
-      }
-    });
-  }, { rootMargin: '-45% 0px -50% 0px', threshold: 0.01 });
-
-  shown.forEach(loc => {
-    const sec = document.getElementById(loc.id);
-    if(sec) observer.observe(sec);
-  });
-}
-  // Folder toggle
-  const folder = navEl.querySelector('[data-folder="sailing"]');
-  if(folder){
-    const btn = folder.querySelector('.nav-folder-btn');
-    btn?.addEventListener('click', () => {
-      const collapsed = folder.classList.toggle('collapsed');
-      btn.setAttribute('aria-expanded', (!collapsed).toString());
-      const caret = folder.querySelector('.nav-caret');
-      if(caret) caret.textContent = collapsed ? '▸' : '▾';
-    });
-  }
-
-
-function locationCard(loc){
-  const rewardsRaw = (loc.rewards || []).slice();
-
-  const rows = rewardsRaw.map(r => {
-    const name = (r.name ?? r.item ?? '').toString();
-    const count = (r.count ?? r.qty ?? '').toString();
-    const rateRaw = (r.rate ?? r.prob ?? '');
-    const rateNum = parseFloat(String(rateRaw).replace('%','')) || 0;
-    return { name, count, rateRaw: String(rateRaw).replace('%',''), rateNum };
-  }).filter(x => x.name);
-
-  rows.sort((a,b)=> b.rateNum - a.rateNum);
-
-  return `
-    <section class="card" id="${loc.id}">
+  content.innerHTML = `
+    <section class="card" id="goldcalc">
       <div class="card-head">
-        <div class="card-title">
-          <div class="h">${esc(loc.name)}</div>
-          <div class="s muted">${esc(loc.group)} · ${esc(loc.points)}P · ${esc(loc.time)}</div>
+        <h2>골드 보내기 계산기</h2>
+        <div style="color:var(--muted);font-size:13px;">
+          입력 즉시 수수료 5% 자동 계산
         </div>
       </div>
+      <div class="card-body">
+        <label>보낼 골드</label>
+        <input type="number" id="goldInput" class="calc-input" placeholder="예: 100000">
 
-      <div style="padding:14px; overflow:auto;">
-        <table class="reward-table">
-          <thead>
-            <tr>
-              <th style="min-width:220px;">보상</th>
-              <th style="min-width:80px;">개수</th>
-              <th style="min-width:90px;">확률</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${
-              rows.length
-                ? rows.map(r => `
-                    <tr>
-                      <td>${esc(r.name)}</td>
-                      <td>${esc(r.count || '-')}</td>
-                      <td>${esc(r.rateRaw)}%</td>
-                    </tr>
-                  `).join('')
-                : `<tr><td colspan="3" class="muted">보상 데이터가 없습니다.</td></tr>`
-            }
-          </tbody>
-        </table>
+        <div class="result">
+          <div>수수료 (5%) : <b id="feeAmount">0</b></div>
+          <div style="margin-top:6px;">받는 골드 : <b id="finalAmount">0</b></div>
+        </div>
       </div>
     </section>
-  `;
-}
 
-// Search & filters
-qEl.addEventListener('input', (e) => { query = e.target.value || ''; render(); });
-pills.forEach(p => {
-  p.addEventListener('click', () => {
-    pills.forEach(x => x.classList.remove('active'));
-    p.classList.add('active');
-    filter = p.dataset.filter;
-    render();
-  });
-});
-
-// Modal close
-document.getElementById('closeModal').addEventListener('click', () => modal.classList.remove('open'));
-modal.addEventListener('click', (e) => { if(e.target === modal) modal.classList.remove('open'); });
-window.addEventListener('keydown', (e) => { if(e.key === 'Escape') modal.classList.remove('open'); });
-
-// Nav collapse
-const collapseBtn = document.getElementById('collapseNav');
-let navCollapsed = false;
-collapseBtn.addEventListener('click', () => {
-  navCollapsed = !navCollapsed;
-  document.querySelector('.nav').style.display = navCollapsed ? 'none' : 'block';
-  collapseBtn.textContent = navCollapsed ? '펼치기' : '접기';
-});
-
-async function boot(){
-  try{
-    const res = await fetch('./data.json', {cache:'no-store'});
-    DATA = await res.json();
-    document.getElementById('pageTitle').textContent = DATA.meta?.title || '섬/대륙 보상표 (데이터형)';
-    document.getElementById('pageSub').textContent = (DATA.meta?.notes || 'data.json 수정 → 자동 반영');
-    render();
-  }catch(err){
-    contentEl.innerHTML = `
-      <div class="card">
+    ${DATA.locations.map(loc => `
+      <section class="card" id="${loc.id}">
         <div class="card-head">
-          <div class="card-title">
-            <div class="h">로드 실패</div>
-            <div class="s muted">브라우저가 로컬 파일에서 JSON 로드를 막았을 수 있어요.</div>
+          <h2>${loc.name}</h2>
+          <div style="color:var(--muted);font-size:13px;">
+            ${loc.group} · ${loc.points}P · ${loc.time}
           </div>
         </div>
-        <div style="padding:14px;color:rgba(255,255,255,.85);line-height:1.6">
-          <div>해결 방법 (추천):</div>
-          <ol>
-            <li><span class="k">VS Code</span> 설치 → Live Server 확장 설치 → index.html 우클릭 → <span class="k">Open with Live Server</span></li>
-            <li>또는 터미널에서 이 폴더로 이동 후: <span class="k">python -m http.server 8000</span> 실행 → 브라우저에서 <span class="k">http://localhost:8000</span></li>
-          </ol>
-          <div class="muted">에러: ${esc(err?.message || err)}</div>
-        </div>
-      </div>
-    `;
-  }
+      </section>
+    `).join('')}
+  `;
+
+  const input = document.getElementById("goldInput");
+
+  input.addEventListener("input", function(){
+    const gold = parseFloat(this.value);
+
+    if(isNaN(gold) || gold <= 0){
+      document.getElementById("feeAmount").textContent = "0";
+      document.getElementById("finalAmount").textContent = "0";
+      return;
+    }
+
+    const fee = gold * 0.05;
+    const finalGold = gold - fee;
+
+    document.getElementById("feeAmount").textContent = fee.toLocaleString();
+    document.getElementById("finalAmount").textContent = finalGold.toLocaleString();
+  });
 }
+
 boot();
 </script>
+
 </body>
 </html>

@@ -271,23 +271,25 @@
   font-weight: 700;
 }
 
-</style>
 
-<style>
-.fade-transition{
+/* ===== 계산기 모드 애니메이션 ===== */
+#wikiContent,
+#goldCalcSection{
   transition: opacity .35s ease, transform .35s ease;
 }
-.hidden-animated{
+
+.fade-out{
   opacity:0;
   transform: translateY(10px);
   pointer-events:none;
 }
+
 .calc-mode{
-  background: radial-gradient(1200px 600px at 50% -10%, #1e1b4b 0%, #0b0f17 60%);
+  background: radial-gradient(1200px 600px at 50% -10%, #1e1b4b 0%, #0b0f17 60%) !important;
   transition: background .5s ease;
 }
-</style>
 
+</style>
 </head>
 <body id="bodyRoot">
   <div class="topbar" id="top">
@@ -665,12 +667,18 @@ document.addEventListener('DOMContentLoaded', () => {
   tabWiki.onclick = () => {
     tabWiki.style.background = 'linear-gradient(135deg,#6366f1,#8b5cf6)';
     tabCalc.style.background = 'rgba(255,255,255,.06)';
-    calcSection.classList.add('hidden-animated');
-    setTimeout(()=>{ calcSection.style.display = 'none'; },300);
-    const wiki = document.getElementById('wikiContent');
-    wiki.style.display = 'block';
-    wiki.classList.remove('hidden-animated');
-    document.getElementById('bodyRoot').classList.remove('calc-mode');
+
+    calcSection.classList.add('fade-out');
+
+    setTimeout(()=>{
+      calcSection.style.display = 'none';
+      calcSection.classList.remove('fade-out');
+
+      const wiki = document.getElementById('wikiContent');
+      wiki.style.display = 'block';
+      document.getElementById('bodyRoot').classList.remove('calc-mode');
+    },300);
+
     sidebar.style.display = 'block';
     layout.style.gridTemplateColumns = '300px 1fr';
   };
@@ -678,11 +686,18 @@ document.addEventListener('DOMContentLoaded', () => {
   tabCalc.onclick = () => {
     tabCalc.style.background = 'linear-gradient(135deg,#6366f1,#8b5cf6)';
     tabWiki.style.background = 'rgba(255,255,255,.06)';
-    calcSection.classList.remove('hidden-animated');
-    calcSection.style.display = 'block';
-    document.getElementById('wikiContent').classList.add('hidden-animated');
-    document.getElementById('wikiContent').style.display = 'none';
-    document.getElementById('bodyRoot').classList.add('calc-mode');
+
+    const wiki = document.getElementById('wikiContent');
+    wiki.classList.add('fade-out');
+
+    setTimeout(()=>{
+      wiki.style.display = 'none';
+      wiki.classList.remove('fade-out');
+
+      calcSection.style.display = 'block';
+      document.getElementById('bodyRoot').classList.add('calc-mode');
+    },300);
+
     sidebar.style.display = 'none';
     layout.style.gridTemplateColumns = '1fr';
     window.scrollTo({top:0,behavior:'smooth'});

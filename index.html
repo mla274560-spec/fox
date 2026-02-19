@@ -3,32 +3,24 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>섬/대륙 보상표 (데이터형)</title>
+<title>섬/대륙 보상표</title>
 
 <style>
 :root{
   --bg:#0b0f17;
   --panel:rgba(255,255,255,.06);
-  --panel2:rgba(255,255,255,.12);
+  --border:rgba(255,255,255,.12);
   --text:rgba(255,255,255,.92);
   --muted:rgba(255,255,255,.65);
-  --border:rgba(255,255,255,.12);
-  --radius:18px;
   --accent:#6366f1;
 }
 *{box-sizing:border-box}
-body{
-  margin:0;
-  font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans KR",Arial;
-  background:var(--bg);
-  color:var(--text);
-}
+body{margin:0;font-family:system-ui;background:var(--bg);color:var(--text);}
 
-/* 상단 탭 */
 .top-tabs{
   display:flex;
-  gap:10px;
-  padding:15px 20px;
+  gap:12px;
+  padding:16px 24px;
   border-bottom:1px solid var(--border);
   background:#0f1420;
 }
@@ -38,38 +30,30 @@ body{
   background:var(--panel);
   cursor:pointer;
   font-weight:600;
-  font-size:14px;
 }
-.tab.active{
-  background:var(--accent);
-}
+.tab.active{background:var(--accent);}
 
-.layout{display:grid;grid-template-columns:280px 1fr}
-.sidebar{
-  border-right:1px solid var(--border);
-  padding:20px;
-}
+.layout{display:grid;grid-template-columns:280px 1fr;}
+.layout.full{grid-template-columns:1fr;}
+.sidebar{border-right:1px solid var(--border);padding:20px;}
+.sidebar.hidden{display:none;}
 .nav-item{
   display:block;
   padding:10px;
   border-radius:12px;
   margin-bottom:6px;
-  background:rgba(255,255,255,.04);
+  background:rgba(255,255,255,.05);
+  text-decoration:none;
+  color:white;
 }
-.nav-item:hover{background:rgba(255,255,255,.08)}
-.content{padding:30px}
+.content{padding:30px;}
 .card{
   border:1px solid var(--border);
-  border-radius:var(--radius);
+  border-radius:18px;
   margin-bottom:30px;
-  overflow:hidden;
 }
-.card-head{
-  padding:16px;
-  border-bottom:1px solid var(--border);
-  background:rgba(255,255,255,.03);
-}
-.card-body{padding:20px}
+.card-head{padding:16px;border-bottom:1px solid var(--border);background:rgba(255,255,255,.03);}
+.card-body{padding:20px;}
 .calc-input{
   width:100%;
   padding:12px;
@@ -81,58 +65,45 @@ body{
   font-size:16px;
 }
 .result{margin-top:20px;font-size:16px}
-.hidden{display:none}
+.hidden{display:none;}
 </style>
 </head>
 
 <body>
 
 <div class="top-tabs">
-  <div class="tab active" onclick="showTab('calc')">골드 계산기</div>
-  <div class="tab" onclick="showTab('data')">보상표</div>
+  <div class="tab active" id="tabCalc">골드 계산기</div>
+  <div class="tab" id="tabWiki">항해 위키</div>
 </div>
 
-<div class="layout">
+<div class="layout full" id="layout">
 
-<aside class="sidebar" id="sidebar">
+<aside class="sidebar hidden" id="sidebar">
   <h3>목차</h3>
   <div id="nav"></div>
 </aside>
 
-<main class="content" id="content">
-  로딩 중...
-</main>
+<main class="content" id="content"></main>
 
 </div>
 
 <script>
-let DATA = null;
+let DATA=null;
 
 async function boot(){
-  const res = await fetch('./data.json', {cache:'no-store'});
-  DATA = await res.json();
+  const res=await fetch('./data.json',{cache:'no-store'});
+  DATA=await res.json();
   render();
-}
-
-function showTab(tab){
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  event.target.classList.add('active');
-
-  if(tab === 'calc'){
-    document.getElementById('sidebar').classList.add('hidden');
-    document.getElementById('goldcalc').scrollIntoView({behavior:'smooth'});
-  }else{
-    document.getElementById('sidebar').classList.remove('hidden');
-    document.getElementById('summary').scrollIntoView({behavior:'smooth'});
-  }
 }
 
 function render(){
 
+  // NAV 생성
   nav.innerHTML = DATA.locations.map(loc => `
     <a href="#${loc.id}" class="nav-item">${loc.name}</a>
   `).join('');
 
+  // 콘텐츠 생성
   content.innerHTML = `
     <section class="card" id="goldcalc">
       <div class="card-head">
@@ -144,7 +115,6 @@ function render(){
       <div class="card-body">
         <label>보낼 골드</label>
         <input type="number" id="goldInput" class="calc-input" placeholder="예: 100000">
-
         <div class="result">
           <div>수수료 (5%) : <b id="feeAmount">0</b></div>
           <div style="margin-top:6px;">받는 골드 : <b id="finalAmount">0</b></div>
@@ -152,40 +122,62 @@ function render(){
       </div>
     </section>
 
-    <section class="card" id="summary">
-      <div class="card-head">
-        <h2>보상표</h2>
-      </div>
-    </section>
-
-    ${DATA.locations.map(loc => `
-      <section class="card" id="${loc.id}">
-        <div class="card-head">
-          <h2>${loc.name}</h2>
-          <div style="color:var(--muted);font-size:13px;">
-            ${loc.group} · ${loc.points}P · ${loc.time}
+    <div id="wikiSection" class="hidden">
+      ${DATA.locations.map(loc => `
+        <section class="card" id="${loc.id}">
+          <div class="card-head">
+            <h2>${loc.name}</h2>
+            <div style="color:var(--muted);font-size:13px;">
+              ${loc.group} · ${loc.points}P · ${loc.time}
+            </div>
           </div>
-        </div>
-      </section>
-    `).join('')}
+        </section>
+      `).join('')}
+    </div>
   `;
 
-  const input = document.getElementById("goldInput");
-  input.addEventListener("input", function(){
-    const gold = parseFloat(this.value);
-
-    if(isNaN(gold) || gold <= 0){
-      document.getElementById("feeAmount").textContent = "0";
-      document.getElementById("finalAmount").textContent = "0";
+  // 계산기 기능
+  const input=document.getElementById("goldInput");
+  input.addEventListener("input",function(){
+    const gold=parseFloat(this.value);
+    if(isNaN(gold)||gold<=0){
+      feeAmount.textContent="0";
+      finalAmount.textContent="0";
       return;
     }
-
-    const fee = gold * 0.05;
-    const finalGold = gold - fee;
-
-    document.getElementById("feeAmount").textContent = fee.toLocaleString();
-    document.getElementById("finalAmount").textContent = finalGold.toLocaleString();
+    const fee=gold*0.05;
+    const finalGold=gold-fee;
+    feeAmount.textContent=fee.toLocaleString();
+    finalAmount.textContent=finalGold.toLocaleString();
   });
+
+  setupTabs();
+}
+
+function setupTabs(){
+  const tabCalc=document.getElementById("tabCalc");
+  const tabWiki=document.getElementById("tabWiki");
+  const sidebar=document.getElementById("sidebar");
+  const wiki=document.getElementById("wikiSection");
+  const layout=document.getElementById("layout");
+
+  tabCalc.onclick=()=>{
+    tabCalc.classList.add("active");
+    tabWiki.classList.remove("active");
+    sidebar.classList.add("hidden");
+    layout.classList.add("full");
+    wiki.classList.add("hidden");
+    document.getElementById("goldcalc").scrollIntoView({behavior:"smooth"});
+  };
+
+  tabWiki.onclick=()=>{
+    tabWiki.classList.add("active");
+    tabCalc.classList.remove("active");
+    sidebar.classList.remove("hidden");
+    layout.classList.remove("full");
+    wiki.classList.remove("hidden");
+    wiki.scrollIntoView({behavior:"smooth"});
+  };
 }
 
 boot();

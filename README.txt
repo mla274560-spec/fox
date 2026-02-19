@@ -1,8 +1,9 @@
-설치 방법 (v2 - manifest 경로 자동 fallback)
-1) index.html을 GitHub Pages 루트(fox/)에 올리세요.
-2) data/ 폴더 전체를 같이 올리세요. (data/manifest.json + 각 섬 json)
-3) 혹시 data/ 경로가 어려우면, manifest.json은 루트(fox/manifest.json)에도 같이 올려도 됩니다. (이 패키지에 포함)
+업로드 방법
+1) 이 패키지의 index.html을 저장소 루트(fox/)에 올리세요.
+2) data/ 폴더 전체를 루트에 올리세요. (data/manifest.json + 각 섬 json)
+3) assets/ 폴더는 기존 그대로 유지하세요. (아이콘 경로가 assets/...로 되어 있으면 필요)
 
-정상 확인 URL (둘 중 하나라도 열리면 OK)
-- https://<user>.github.io/fox/data/manifest.json
-- https://<user>.github.io/fox/manifest.json
+특징
+- 처음 접속하면 첫 항목(예: 라비온)을 자동으로 엽니다.
+- 왼쪽 목록 클릭 시 해당 JSON만 로드합니다.
+- 상단 탭: 항해 위키 / 골드 계산기

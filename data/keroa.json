@@ -1,8 +1,7 @@
 {
   "meta": {
     "title": "케로아",
-    "updated": "2026-02-14",
-    "notes": "  "
+    "updated": "2026-02-14"
   },
   "groups": [
     {
@@ -30,66 +29,64 @@
       "default_time": "48시간"
     }
   ],
-  "locations": [
-    {
-      "id": "keroa",
-      "name": "케로아",
-      "group": "소형 섬",
-      "points": 850,
-      "time": "4시간 5분",
-      "icon": "assets/icons/keroa.png",
-      "rewards": [
-        {
-          "item": "은은한 결정",
-          "qty": 3,
-          "prob": "14%"
-        },
-        {
-          "item": "용감한 결정",
-          "qty": 3,
-          "prob": "14%"
-        },
-        {
-          "item": "고요한 결정",
-          "qty": 3,
-          "prob": "14%"
-        },
-        {
-          "item": "소박한 결정",
-          "qty": 3,
-          "prob": "14%"
-        },
-        {
-          "item": "아련한 결정",
-          "qty": 3,
-          "prob": "14%"
-        },
-        {
-          "item": "광휘의 결정",
-          "qty": 1,
-          "prob": "6%"
-        },
-        {
-          "item": "위대한 결정",
-          "qty": 1,
-          "prob": "6%"
-        },
-        {
-          "item": "청명한 결정",
-          "qty": 1,
-          "prob": "6%"
-        },
-        {
-          "item": "영롱한 결정",
-          "qty": 1,
-          "prob": "6%"
-        },
-        {
-          "item": "화사한 결정",
-          "qty": 1,
-          "prob": "6%"
-        }
-      ]
-    }
-  ]
+  "location": {
+    "id": "keroa",
+    "name": "케로아",
+    "group": "소형 섬",
+    "points": 850,
+    "time": "4시간 5분",
+    "icon": "assets/icons/keroa.png",
+    "rewards": [
+      {
+        "item": "은은한 결정",
+        "qty": 3,
+        "prob": "14%"
+      },
+      {
+        "item": "용감한 결정",
+        "qty": 3,
+        "prob": "14%"
+      },
+      {
+        "item": "고요한 결정",
+        "qty": 3,
+        "prob": "14%"
+      },
+      {
+        "item": "소박한 결정",
+        "qty": 3,
+        "prob": "14%"
+      },
+      {
+        "item": "아련한 결정",
+        "qty": 3,
+        "prob": "14%"
+      },
+      {
+        "item": "광휘의 결정",
+        "qty": 1,
+        "prob": "6%"
+      },
+      {
+        "item": "위대한 결정",
+        "qty": 1,
+        "prob": "6%"
+      },
+      {
+        "item": "청명한 결정",
+        "qty": 1,
+        "prob": "6%"
+      },
+      {
+        "item": "영롱한 결정",
+        "qty": 1,
+        "prob": "6%"
+      },
+      {
+        "item": "화사한 결정",
+        "qty": 1,
+        "prob": "6%"
+      }
+    ]
+  }
 }

@@ -1,8 +1,7 @@
 {
   "meta": {
     "title": "모레인",
-    "updated": "2026-02-14",
-    "notes": "  "
+    "updated": "2026-02-14"
   },
   "groups": [
     {
@@ -30,46 +29,44 @@
       "default_time": "48시간"
     }
   ],
-  "locations": [
-    {
-      "id": "morein",
-      "name": "모레인",
-      "group": "소형 섬",
-      "points": 850,
-      "time": "4시간 5분",
-      "icon": "assets/icons/morein.png",
-      "rewards": [
-        {
-          "item": "모험 램프",
-          "qty": 1,
-          "prob": "35%"
-        },
-        {
-          "item": "탐험 램프",
-          "qty": 1,
-          "prob": "35%"
-        },
-        {
-          "item": "모험 램프",
-          "qty": 2,
-          "prob": "10%"
-        },
-        {
-          "item": "탐험 램프",
-          "qty": 2,
-          "prob": "10%"
-        },
-        {
-          "item": "모험 램프",
-          "qty": 3,
-          "prob": "5%"
-        },
-        {
-          "item": "탐험 램프",
-          "qty": 3,
-          "prob": "5%"
-        }
-      ]
-    }
-  ]
+  "location": {
+    "id": "morein",
+    "name": "모레인",
+    "group": "소형 섬",
+    "points": 850,
+    "time": "4시간 5분",
+    "icon": "assets/icons/morein.png",
+    "rewards": [
+      {
+        "item": "모험 램프",
+        "qty": 1,
+        "prob": "35%"
+      },
+      {
+        "item": "탐험 램프",
+        "qty": 1,
+        "prob": "35%"
+      },
+      {
+        "item": "모험 램프",
+        "qty": 2,
+        "prob": "10%"
+      },
+      {
+        "item": "탐험 램프",
+        "qty": 2,
+        "prob": "10%"
+      },
+      {
+        "item": "모험 램프",
+        "qty": 3,
+        "prob": "5%"
+      },
+      {
+        "item": "탐험 램프",
+        "qty": 3,
+        "prob": "5%"
+      }
+    ]
+  }
 }

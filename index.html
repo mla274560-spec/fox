@@ -2,682 +2,325 @@
 <html lang="ko">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>섬/대륙 보상표 (데이터형)</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>맛동산</title>
   <style>
     :root{
       --bg:#0b0f17;
-      --panel:rgba(255,255,255,.06);
-      --panel2:rgba(255,255,255,.10);
+      --panel:#101827;
+      --panel2:#0f172a;
+      --border:rgba(255,255,255,.10);
       --text:rgba(255,255,255,.92);
       --muted:rgba(255,255,255,.65);
-      --border:rgba(255,255,255,.12);
-      --shadow:0 10px 30px rgba(0,0,0,.35);
-      --radius:18px;
-      --max:1160px;
-      --accent:rgba(99,102,241,.90);
+      --accent:#6366f1;
+      --accent2:#8b5cf6;
+      --max:1200px;
     }
     *{box-sizing:border-box}
     body{
-      margin:0;
-      font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans KR",Arial,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
-      background: radial-gradient(1200px 700px at 10% 0%, #162036 0%, var(--bg) 55%) fixed;
-      color:var(--text);
+      margin:0; background:var(--bg); color:var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic", Arial, sans-serif;
     }
-    a{color:inherit;text-decoration:none}
+    a{color:inherit; text-decoration:none}
     .topbar{
-      position:sticky;top:0;z-index:50;
-      backdrop-filter:blur(14px);
-      background:rgba(11,15,23,.72);
+      position:sticky; top:0; z-index:50;
+      background:rgba(11,15,23,.82); backdrop-filter: blur(12px);
       border-bottom:1px solid var(--border);
     }
-    .topbar-inner{
-      max-width:var(--max);
-      margin:0 auto;
-      padding:14px 18px;
-      display:flex;
-      align-items:center;
-      gap:12px;
-      flex-wrap:wrap;
+    .topbar-inner{max-width:var(--max); margin:0 auto; padding:14px 18px; display:flex; gap:12px; align-items:center; justify-content:space-between;}
+    .brand{display:flex; flex-direction:column; gap:2px;}
+    .brand .t{font-weight:900; letter-spacing:.2px}
+    .brand .s{font-size:12px; color:var(--muted)}
+    .tabs{display:flex; gap:8px; align-items:center;}
+    .tab{
+      padding:9px 14px; border-radius:999px; border:1px solid var(--border);
+      background:rgba(255,255,255,.04); cursor:pointer; user-select:none;
+      font-size:13px; font-weight:800; color:rgba(255,255,255,.88);
+      transition: transform .2s ease, background .2s ease, border-color .2s ease, opacity .2s ease;
     }
-    .brand{display:flex;flex-direction:column;gap:2px;min-width:240px}
-    .brand .title{font-weight:900;letter-spacing:-0.02em}
-    .brand .sub{font-size:12px;color:var(--muted)}
-    .search{
-      flex:1;
-      min-width:220px;
-      display:flex;gap:10px;align-items:center;
-      background:var(--panel);
-      border:1px solid var(--border);
-      border-radius:999px;
-      padding:10px 12px 10px 14px;
+    .tab:hover{background:rgba(255,255,255,.06)}
+    .tab.active{background:rgba(99,102,241,.22); border-color:rgba(99,102,241,.45);}
+    .wrap{max-width:var(--max); margin:0 auto; padding:18px;}
+    .layout{display:grid; grid-template-columns:320px 1fr; gap:16px; align-items:start;}
+    .card{border:1px solid var(--border); background:rgba(255,255,255,.04); border-radius:18px; overflow:hidden; box-shadow:0 14px 40px rgba(0,0,0,.25);}
+    .card-head{padding:14px 16px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; gap:10px; align-items:flex-start;}
+    .h{font-weight:900}
+    .s{font-size:12px; color:var(--muted); margin-top:4px;}
+    .body{padding:14px 16px;}
+    .input{
+      width:100%; padding:12px 12px; border-radius:12px; border:1px solid var(--border);
+      background:rgba(255,255,255,.04); color:var(--text); outline:none;
     }
-    .search input{
-      width:100%;
-      background:transparent;border:0;outline:none;color:var(--text);font-size:14px;
-    }
-    .pill{
-      display:inline-flex;gap:8px;align-items:center;
-      padding:8px 10px;border-radius:999px;
-      border:1px solid var(--border);
-      background:var(--panel);
-      color:var(--muted);
-      font-size:12px;
-      cursor:pointer;
-      user-select:none;
-    }
-    .pill.active{
-      background:rgba(99,102,241,.20);
-      border-color:rgba(99,102,241,.45);
-      color:rgba(255,255,255,.92);
-    }
-    .layout{
-      max-width:var(--max);
-      margin:0 auto;
-      padding:18px;
-      display:grid;
-      grid-template-columns:300px 1fr;
-      gap:18px;
-    }
-    @media (max-width:980px){
-      .layout{grid-template-columns:1fr}
-    }
-    .sidebar{
-      position:sticky;top:86px;align-self:start;
-      border:1px solid var(--border);
-      background:var(--panel);
-      border-radius:var(--radius);
-      overflow:hidden;
-      box-shadow:var(--shadow);
-    }
-    @media (max-width:980px){.sidebar{position:relative;top:0}}
-    .side-head{
-      padding:14px 14px 10px;
-      border-bottom:1px solid var(--border);
-      display:flex;justify-content:space-between;align-items:center;gap:10px;
-    }
-    .side-head .label{font-weight:800}
-    .side-head .hint{font-size:12px;color:var(--muted)}
-    .nav{max-height:calc(100vh - 160px);overflow:auto;padding:10px}
-    .nav a{
-      display:flex;gap:10px;
-      padding:10px;border-radius:14px;border:1px solid transparent;
-      color:rgba(255,255,255,.86);
-    }
-    .nav a:hover{background:var(--panel2);border-color:var(--border)}
-    .nav a.active{background:rgba(99,102,241,.18);border-color:rgba(99,102,241,.45)}
-    .nav .meta{display:flex;flex-direction:column;gap:2px;min-width:0}
-    .nav .name{font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .nav .cat{font-size:12px;color:var(--muted)}
-    .content{display:flex;flex-direction:column;gap:14px}
-    .card{
-      border:1px solid var(--border);
-      background:var(--panel);
-      border-radius:var(--radius);
-      overflow:hidden;
-      box-shadow:var(--shadow);
-    }
-    .card-head{
-      padding:14px 16px;
-      display:flex;justify-content:space-between;align-items:center;gap:12px;
-      border-bottom:1px solid var(--border);
-      background:rgba(255,255,255,.03);
-      flex-wrap:wrap;
-    }
-    .card-title{display:flex;flex-direction:column;gap:2px;min-width:0}
-    .card-title .h{font-weight:900;letter-spacing:-0.02em}
-    .card-title .s{font-size:12px;color:var(--muted)}
-    .badge{
-      display:inline-flex;align-items:center;gap:8px;
-      padding:8px 10px;border-radius:999px;
-      border:1px solid var(--border);
-      background:rgba(255,255,255,.05);
-      font-size:12px;color:rgba(255,255,255,.88);
-    }
-    .btn{
-      padding:8px 10px;border-radius:12px;
-      border:1px solid var(--border);
-      background:rgba(255,255,255,.05);
-      color:rgba(255,255,255,.88);
-      font-size:12px;
-      cursor:pointer;
-      user-select:none;
-      display:inline-flex;align-items:center;gap:8px;
-    }
-    .btn:hover{background:rgba(255,255,255,.08)}
-    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:14px}
-    @media (max-width:980px){.grid2{grid-template-columns:1fr}}
-    .mini{
-      border:1px solid var(--border);
-      background:rgba(255,255,255,.04);
-      border-radius:16px;
-      overflow:hidden;
-    }
-    .mini-head{
-      padding:10px 12px;
-      border-bottom:1px solid var(--border);
-      display:flex;justify-content:space-between;align-items:center;gap:10px;
-    }
-    .mini-head .t{font-weight:900}
-    .mini-body{padding:12px}
-    .icon{
-      width:100%;
-      border-radius:14px;
-      background:white;
-      display:block;
-    }
-    table{
-      width:100%;
-      border-collapse:collapse;
-      font-size:13px;
-    }
-    th,td{
-      padding:10px 8px;
-      border-bottom:1px solid rgba(255,255,255,.10);
-      text-align:left;
-      vertical-align:top;
-    }
-    th{
-      color:rgba(255,255,255,.78);
-      font-weight:800;
-      position:sticky;top:0;
-      background:rgba(15,19,28,.75);
-      backdrop-filter:blur(10px);
-    }
-    .k{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono",monospace}
+    .row{display:flex; gap:10px; flex-wrap:wrap; align-items:center;}
+    .badge{font-size:12px; padding:6px 10px; border-radius:999px; border:1px solid var(--border); color:rgba(255,255,255,.82); background:rgba(255,255,255,.03);}
+    .nav-list{display:flex; flex-direction:column;}
+    .nav-item{display:flex; gap:10px; padding:10px 12px; border-top:1px solid var(--border); align-items:center; cursor:pointer;}
+    .nav-item:hover{background:rgba(255,255,255,.03)}
+    .nav-item.active{background:rgba(99,102,241,.12);}
+    .thumb{width:34px; height:34px; border-radius:10px; border:1px solid var(--border); background:rgba(255,255,255,.04); overflow:hidden; flex:0 0 auto;}
+    .thumb img{width:100%; height:100%; object-fit:cover; display:block;}
+    .meta .name{font-weight:900; font-size:13px}
+    .meta .cat{font-size:12px; color:var(--muted); margin-top:2px}
+    .grid{display:grid; gap:10px;}
+    .table{width:100%; border-collapse:separate; border-spacing:0; overflow:hidden; border:1px solid var(--border); border-radius:14px;}
+    .table th,.table td{padding:10px 10px; border-bottom:1px solid var(--border); font-size:13px; text-align:left;}
+    .table th{color:rgba(255,255,255,.85); background:rgba(255,255,255,.03)}
+    .table tr:last-child td{border-bottom:none}
     .muted{color:var(--muted)}
-    .footer{
-      max-width:var(--max);
-      margin:0 auto;
-      padding:0 18px 26px;
-      color:var(--muted);
-      font-size:12px;
-    }
-
-    /* Folder-style nav */
-    .nav-folder{margin: 4px 0 10px;}
-    .nav-folder-btn{
-      width:100%;
-      display:flex;
-      align-items:center;
-      gap:10px;
-      padding:10px 10px;
-      border-radius:14px;
-      border:1px solid var(--border);
-      background: rgba(255,255,255,.04);
-      color: rgba(255,255,255,.90);
-      cursor:pointer;
-      user-select:none;
-    }
-    .nav-folder-btn:hover{background: var(--panel2);}
-    .nav-caret{width:16px; text-align:center; opacity:.9;}
-    .nav-folder-title{font-weight:900;}
-    .nav-folder-count{
-      margin-left:auto;
-      font-size:12px;
-      color: rgba(255,255,255,.75);
-      padding:2px 8px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.05);
-    }
-    .nav-folder-items{padding:8px 0 0 18px;}
-    .nav-item{display:flex; gap:10px; padding:10px; border-radius:14px; border:1px solid transparent; color:rgba(255,255,255,.86);}
-    .nav-item:hover{background: var(--panel2); border-color: var(--border);}
-    .nav-item.active{background: rgba(99,102,241,.18); border-color: rgba(99,102,241,.45);}
-    .nav-folder.collapsed .nav-folder-items{display:none;}
-    
-    .nav-thumb{
-      background: transparent;
-      border: none;
-      object-fit: contain;
-      width: 34px;
-      height: 34px;
-      border-radius: 10px;      object-fit: cover;
-      flex: 0 0 auto;
-    }
-    .nav-thumb.placeholder{
-      display:block;
-    }
-
-    .nav-folder.collapsed .nav-caret{transform: rotate(-90deg);}
-
-    /* modal */
-    .modal{position:fixed;inset:0;z-index:1000;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(0,0,0,.72);backdrop-filter:blur(8px)}
-    .modal.open{display:flex}
-    .modal-inner{width:min(1200px,98vw);max-height:92vh;overflow:auto;border-radius:18px;border:1px solid rgba(255,255,255,.14);background:rgba(15,19,28,.96);box-shadow:0 20px 70px rgba(0,0,0,.55)}
-    .modal-bar{position:sticky;top:0;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.12);background:rgba(15,19,28,.92)}
-    .modal-bar .t{font-weight:900}
-    .modal-body{padding:14px}
-    .modal-body img{width:100%;height:auto;border-radius:14px;background:white;display:block}
-  
-.reward-table{
-  width:100%;
-  border-collapse: collapse;
-}
-.reward-table th,
-.reward-table td{
-  padding: 10px 12px;
-  border-bottom: 1px solid rgba(255,255,255,.08);
-  text-align: left;
-  vertical-align: top;
-  white-space: nowrap;
-}
-.reward-table td:first-child{
-  white-space: normal;
-}
-.reward-table thead th{
-  background: rgba(255,255,255,.04);
-  font-weight: 700;
-}
-
-</style>
+    .calc-mode body{}
+    .calc-only{display:none;}
+    body.calc-mode{background: radial-gradient(1200px 600px at 50% -10%, #1e1b4b 0%, #0b0f17 60%) fixed; transition: background .5s ease;}
+    body.calc-mode .wiki-only{display:none;}
+    body.calc-mode .calc-only{display:block;}
+    .fade-in{animation:fadeInUp .28s ease both;}
+    @keyframes fadeInUp{from{opacity:0; transform:translateY(10px)}to{opacity:1; transform:translateY(0)}}
+    @media (max-width: 900px){ .layout{grid-template-columns:1fr;} }
+  </style>
 </head>
 <body>
-
-  <div id="debugPanel" style="position:fixed;right:12px;bottom:12px;z-index:9999;
-    max-width:520px;min-width:280px;padding:12px 14px;border-radius:14px;
-    border:1px solid rgba(255,255,255,.14);background:rgba(11,15,23,.92);
-    backdrop-filter: blur(10px);color:rgba(255,255,255,.92);font:12px/1.4 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
-    box-shadow:0 10px 30px rgba(0,0,0,.35);display:none;">
-    <div style="display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:8px;">
-      <div style="font-weight:800;">DEBUG</div>
-      <button id="debugClose" class="btn" style="padding:6px 10px;">닫기</button>
-    </div>
-    <div id="debugBody"></div>
-  </div>
-
-  <div class="topbar" id="top">
+  <div class="topbar">
     <div class="topbar-inner">
       <div class="brand">
-        <div class="title" id="pageTitle">섬/대륙 보상표 (데이터형)</div>
-        <div class="sub" id="pageSub">data.json 수정 → 자동 반영</div>
+        <div class="t" id="pageTitle">맛동산</div>
+        <div class="s" id="pageSub">  </div>
       </div>
-      <div class="search" title="이름/아이템/분류 검색">
-        <span class="k">⌕</span>
-        <input id="q" placeholder="예: 소형 섬 / 카이로센트 / 인챈트북 ..." autocomplete="off" />
+      <div class="tabs">
+        <div class="tab active" id="tabWiki">항해 위키</div>
+        <div class="tab" id="tabCalc">골드 계산기</div>
       </div>
-      <div class="pill active" data-filter="all">전체</div>
-      <div class="pill" data-filter="소형 섬">소형</div>
-      <div class="pill" data-filter="중형 섬">중형</div>
-      <div class="pill" data-filter="일반 대륙">일반</div>
-      <div class="pill" data-filter="대형 대륙">대형</div>
     </div>
   </div>
 
-  <div class="layout">
-    <aside class="sidebar">
-      <div class="side-head">
-        <div>
-          <div class="label">목차</div>
-          <div class="hint">클릭하면 해당 카드로 이동</div>
-        </div>
-        <div class="btn" id="collapseNav">접기</div>
-      </div>
-      <div class="nav" id="nav"></div>
-    </aside>
+  <div class="wrap">
+    <!-- WIKI -->
+    <div class="wiki-only">
+      <div class="layout">
+        <aside class="card">
+          <div class="card-head">
+            <div>
+              <div class="h">목차</div>
+              <div class="s muted">검색/필터 → 목록에 적용</div>
+            </div>
+            <span class="badge" id="countBadge">0</span>
+          </div>
+          <div class="body grid" style="gap:10px;">
+            <input id="q" class="input" placeholder="검색: 라비온, 케로아..." />
+            <select id="groupFilter" class="input"></select>
+          </div>
+          <div class="nav-list" id="nav"></div>
+        </aside>
 
-    <main class="content" id="content">
-      <div class="card">
+        <main class="grid">
+          <section class="card fade-in" id="contentCard">
+            <div class="card-head">
+              <div>
+                <div class="h" id="contentTitle">선택 대기</div>
+                <div class="s" id="contentMeta">왼쪽 목차에서 항목을 눌러주세요.</div>
+              </div>
+              <div class="row">
+                <span class="badge">업데이트: 2026-02-14</span>
+              </div>
+            </div>
+            <div class="body" id="contentBody">
+              <div class="muted">데이터는 <code>data/manifest.json</code> + 개별 JSON로 로드됩니다.</div>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+
+    <!-- CALC -->
+    <div class="calc-only">
+      <section class="card fade-in" style="max-width:720px;margin:0 auto;">
         <div class="card-head">
-          <div class="card-title">
-            <div class="h">로드 중…</div>
-            <div class="s muted">data.json을 읽고 있습니다</div>
+          <div>
+            <div class="h">💰 골드 보내기 계산기</div>
+            <div class="s muted">입력 즉시 수수료 5% 자동 계산</div>
+          </div>
+          <span class="badge">수수료 5%</span>
+        </div>
+        <div class="body" style="max-width:520px;">
+          <label class="muted">보낼 골드</label>
+          <input type="number" id="goldInput" class="input" placeholder="예: 100000" inputmode="numeric" />
+          <div style="margin-top:16px;">
+            <div>수수료(5%) : <b id="feeAmount" style="color:#f87171;">0</b></div>
+            <div style="margin-top:8px;font-size:18px;font-weight:900;">받는 골드 : <b id="finalAmount" style="color:#34d399;">0</b></div>
           </div>
         </div>
-
-          <div style="margin-top:10px">
-            <div class="muted">확인 URL</div>
-            <ul style="margin:6px 0 0 18px; color:rgba(255,255,255,.82)">
-              <li><code>/fox/data/manifest.json</code> (추천 구조)</li>
-              <li><code>/fox/manifest.json</code> (대체 구조)</li>
-            </ul>
-            <div class="muted" style="margin-top:8px">GitHub 저장소에 <b>data 폴더</b>가 올라가 있는지, 파일명이 <b>manifest.json</b>으로 정확한지(대소문자 포함) 확인해줘.</div>
-          </div>
-      </div>
-    </main>
-  </div>
-
-  <div class="footer">
-    <div class="muted">
-      운영 팁: 이 폴더를 그대로 디스코드에 올리기보다는, 깃허브 Pages / Netlify / Vercel 같은 곳에 올리면 링크로 공유가 편합니다.
-      로컬에서 열 때는 <span class="k">index.html</span>을 더블클릭하면 됩니다(브라우저가 JSON 로드를 막으면 아래 README 방법 참고).
-    </div>
-  </div>
-
-  <div class="modal" id="modal" role="dialog" aria-modal="true">
-    <div class="modal-inner">
-      <div class="modal-bar">
-        <div class="t" id="modalTitle">확대보기</div>
-        <div style="display:flex; gap:10px;">
-          <a class="btn" id="openNew" target="_blank" rel="noopener">새 창</a>
-          <div class="btn" id="closeModal">닫기</div>
-        </div>
-      </div>
-      <div class="modal-body">
-        <img id="modalImg" alt="zoom" />
-      </div>
+      </section>
     </div>
   </div>
 
 <script>
-let MANIFEST = null;
-let DATA = null;
-/* filter moved to top */
-/* query moved to top */
-let selectedId = null;
-/* filter moved to top */
-/* query moved to top */
+  // --- helpers
+  const ROOT = new URL('./', window.location.href);
+  const urlJoin = (p) => new URL(p, ROOT).toString();
+  const esc = (s) => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"})[c]);
 
-const navEl = document.getElementById('nav');
-const contentEl = document.getElementById('content');
+  // --- UI elements
+  const tabWiki = document.getElementById('tabWiki');
+  const tabCalc = document.getElementById('tabCalc');
 
-const ROOT = new URL('./', window.location.href); // ex) https://.../fox/
-const urlJoin = (p) => new URL(p, ROOT).toString();
+  const navEl = document.getElementById('nav');
+  const qEl = document.getElementById('q');
+  const gfEl = document.getElementById('groupFilter');
+  const countBadge = document.getElementById('countBadge');
 
-const qEl = document.getElementById('q');
-const pills = Array.from(document.querySelectorAll('.pill'));
+  const contentTitle = document.getElementById('contentTitle');
+  const contentMeta = document.getElementById('contentMeta');
+  const contentBody = document.getElementById('contentBody');
 
-const modal = document.getElementById('modal');
-const modalImg = document.getElementById('modalImg');
-const modalTitle = document.getElementById('modalTitle');
-const openNew = document.getElementById('openNew');
+  let MANIFEST = null;
+  let selectedId = null;
+  let query = '';
+  let groupFilter = 'all';
 
-function esc(s){ return (s??'').toString().replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
-function probToNum(p){
-  const m = (p??'').toString().replace('%','').trim();
-  const n = Number(m);
-  return Number.isFinite(n) ? n : -1;
-}
+  function setMode(mode){
+    if(mode === 'calc'){
+      document.body.classList.add('calc-mode');
+      tabCalc.classList.add('active');
+      tabWiki.classList.remove('active');
+      window.scrollTo({top:0,behavior:'smooth'});
+    } else {
+      document.body.classList.remove('calc-mode');
+      tabWiki.classList.add('active');
+      tabCalc.classList.remove('active');
+      window.scrollTo({top:0,behavior:'smooth'});
+    }
+  }
+  tabWiki.onclick = () => setMode('wiki');
+  tabCalc.onclick = () => setMode('calc');
 
-function matchLocation(loc){
-  const hay = (loc.name + ' ' + loc.group).toLowerCase();
-  const q = query.trim().toLowerCase();
-  const okQ = !q || hay.includes(q);
-  const okF = (filter === 'all') || (loc.group || '').includes(filter);
-  return okQ && okF;
-}
+  // calculator
+  document.getElementById('goldInput').addEventListener('input', function(){
+    const gold = parseFloat(this.value);
+    if(!Number.isFinite(gold) || gold <= 0){
+      document.getElementById('feeAmount').textContent = '0';
+      document.getElementById('finalAmount').textContent = '0';
+      return;
+    }
+    const fee = gold * 0.05;
+    const finalGold = gold - fee;
+    document.getElementById('feeAmount').textContent = fee.toLocaleString();
+    document.getElementById('finalAmount').textContent = finalGold.toLocaleString();
+  });
 
-function render(){
-  if(!MANIFEST) return;
+  function matches(loc){
+    const hay = ((loc.name||'') + ' ' + (loc.group||'')).toLowerCase();
+    const q = query.trim().toLowerCase();
+    const okQ = !q || hay.includes(q);
+    const okG = (groupFilter === 'all') || (loc.group === groupFilter);
+    return okQ && okG;
+  }
 
-  const shown = (MANIFEST.locations||[]).filter(matchLocation);
+  function renderNav(){
+    const list = (MANIFEST.locations||[]).filter(matches);
+    countBadge.textContent = String(list.length);
+    navEl.innerHTML = list.map(loc => {
+      const active = (loc.id === selectedId) ? 'active' : '';
+      const thumb = loc.icon ? `<img src="${esc(loc.icon)}" alt="" loading="lazy">` : '';
+      return `
+        <div class="nav-item ${active}" data-id="${esc(loc.id)}" data-file="${esc(loc.file)}">
+          <div class="thumb">${thumb}</div>
+          <div class="meta">
+            <div class="name">${esc(loc.name)}</div>
+            <div class="cat">${esc(loc.group)} · ${esc(loc.points)}P · ${esc(loc.time)}</div>
+          </div>
+        </div>
+      `;
+    }).join('') || `<div style="padding:12px;color:${esc('rgba(255,255,255,.7)')}">검색 결과가 없어요.</div>`;
 
-  // --- NAV (folder-style) ---
-  const navEmpty = `<div style="padding:12px;color:rgba(255,255,255,.7)">검색 결과가 없어요.</div>`;
-  const navCount = shown.length;
-
-  navEl.innerHTML = navCount ? `
-    <div class="nav-folder" data-folder="sailing">
-      <button class="nav-folder-btn" type="button" aria-expanded="true">
-        <span class="nav-caret">▾</span>
-        <span class="nav-folder-title">항해</span>
-        <span class="nav-folder-count">${navCount}</span>
-      </button>
-      <div class="nav-folder-items">
-        ${shown.map(loc => `
-          <a href="#top" data-id="${loc.id}" data-file="${loc.file}" class="nav-item">
-            ${loc.icon ? `<img class="nav-thumb" src="${loc.icon}" alt="${esc(loc.name)}" loading="lazy" />` : `<div class="nav-thumb placeholder"></div>`}
-            <div class="meta">
-              <div class="name">${esc(loc.name)}</div>
-              <div class="cat">${esc(loc.group)} · ${esc(loc.points)}P · ${esc(loc.time)}</div>
-            </div>
-          </a>
-        `).join('')}
-      </div>
-    </div>
-  ` : navEmpty;
-
-  // Folder toggle wiring
-  const folder = navEl.querySelector('[data-folder="sailing"]');
-  if (folder) {
-    const btn = folder.querySelector('.nav-folder-btn');
-    const caret = folder.querySelector('.nav-caret');
-    if (btn) {
-      btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        const collapsed = folder.classList.toggle('collapsed');
-        btn.setAttribute('aria-expanded', (!collapsed).toString());
-        if (caret) caret.textContent = collapsed ? '▸' : '▾';
+    Array.from(navEl.querySelectorAll('.nav-item')).forEach(el => {
+      el.addEventListener('click', async () => {
+        const id = el.dataset.id;
+        const file = el.dataset.file;
+        await loadIsland(id, file);
+        renderNav();
       });
-    }
-  }
-
-  // Nav item click: load the selected json
-  Array.from(navEl.querySelectorAll('a.nav-item[data-file]')).forEach(a => {
-    a.addEventListener('click', async (e) => {
-      e.preventDefault();
-      const id = a.dataset.id;
-      const file = a.dataset.file;
-      await loadIsland(id, file);
-      // active highlight
-      Array.from(navEl.querySelectorAll('a.nav-item')).forEach(x => x.classList.remove('active'));
-      a.classList.add('active');
-    });
-  });
-
-  // Content: if none selected, show 안내 카드
-  if(!selectedId || !DATA){
-    contentEl.innerHTML = `
-      <section class="card" id="summary">
-        <div class="card-head">
-          <div class="card-title">
-            <div class="h">항해 위키</div>
-            <div class="s muted">왼쪽 목차에서 대륙/섬을 선택하면 보상표가 열립니다.</div>
-          </div>
-          <div style="display:flex; gap:10px; flex-wrap:wrap;">
-            <span class="badge">업데이트: ${esc(MANIFEST.meta?.updated || '')}</span>
-            <span class="badge">항목 수: ${(MANIFEST.locations||[]).length}</span>
-          </div>
-        </div>
-        <div style="padding:14px;color:rgba(255,255,255,.85);line-height:1.7">
-          <div class="muted">검색/필터는 목차 목록에 적용됩니다.</div>
-        </div>
-      </section>
-    `;
-    return;
-  }
-
-  // Render selected location only
-  const loc = (DATA.locations||[])[0];
-  contentEl.innerHTML = `
-    <section class="card" id="summary">
-      <div class="card-head">
-        <div class="card-title">
-          <div class="h">${esc(loc.name)} 보상표</div>
-          <div class="s muted">${esc(loc.group)} · ${esc(loc.points)}P · ${esc(loc.time)}</div>
-        </div>
-        <div style="display:flex; gap:10px; flex-wrap:wrap;">
-          <span class="badge">업데이트: ${esc(MANIFEST.meta?.updated || '')}</span>
-          <a class="btn" href="#top" onclick="window.scrollTo({top:0,behavior:'smooth'}); return false;">맨 위</a>
-        </div>
-      </div>
-      <div style="padding:14px;color:rgba(255,255,255,.85);line-height:1.7">
-        <div class="muted">왼쪽에서 다른 항목을 선택하면 해당 항목의 JSON을 불러옵니다.</div>
-      </div>
-    </section>
-    ${locationCard(loc)}
-  `;
-
-  // Zoom wiring (works for the single loc)
-  Array.from(document.querySelectorAll('[data-zoom]')).forEach(btn => {
-    btn.addEventListener('click', () => {
-      const id = btn.getAttribute('data-zoom');
-      const locx = (DATA.locations||[]).find(x => x.id === id);
-      if(!locx) return;
-      const src = locx.icon || '';
-      modalTitle.textContent = `${locx.name} · ${locx.group}`;
-      modalImg.src = src;
-      openNew.href = src;
-      modal.classList.add('open');
-    });
-  });
-}
-
-// Folder toggle
-  const folder = navEl.querySelector('[data-folder="sailing"]');
-  if(folder){
-    const btn = folder.querySelector('.nav-folder-btn');
-    btn?.addEventListener('click', () => {
-      const collapsed = folder.classList.toggle('collapsed');
-      btn.setAttribute('aria-expanded', (!collapsed).toString());
-      const caret = folder.querySelector('.nav-caret');
-      if(caret) caret.textContent = collapsed ? '▸' : '▾';
     });
   }
 
+  function renderGroups(){
+    const opts = ['all', ...(MANIFEST.groups||[]).map(g => g.key)];
+    gfEl.innerHTML = opts.map(v => `<option value="${esc(v)}">${esc(v === 'all' ? '전체' : v)}</option>`).join('');
+  }
 
-function locationCard(loc){
-  const rewardsRaw = (loc.rewards || []).slice();
-
-  const rows = rewardsRaw.map(r => {
-    const name = (r.name ?? r.item ?? '').toString();
-    const count = (r.count ?? r.qty ?? '').toString();
-    const rateRaw = (r.rate ?? r.prob ?? '');
-    const rateNum = parseFloat(String(rateRaw).replace('%','')) || 0;
-    return { name, count, rateRaw: String(rateRaw).replace('%',''), rateNum };
-  }).filter(x => x.name);
-
-  rows.sort((a,b)=> b.rateNum - a.rateNum);
-
-  return `
-    <section class="card" id="${loc.id}">
-      <div class="card-head">
-        <div class="card-title">
-          <div class="h">${esc(loc.name)}</div>
-          <div class="s muted">${esc(loc.group)} · ${esc(loc.points)}P · ${esc(loc.time)}</div>
-        </div>
-        ${loc.icon ? `<div class="btn" data-zoom="${loc.id}" title="아이콘 확대">이미지</div>` : ``}
-      </div>
-
-      <div style="padding:14px; overflow:auto;">
-        <table class="reward-table">
-          <thead>
-            <tr>
-              <th style="min-width:220px;">보상</th>
-              <th style="min-width:80px;">개수</th>
-              <th style="min-width:90px;">확률</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${
-              rows.length
-                ? rows.map(r => `
-                    <tr>
-                      <td>${esc(r.name)}</td>
-                      <td>${esc(r.count || '-')}</td>
-                      <td>${esc(r.rateRaw)}%</td>
-                    </tr>
-                  `).join('')
-                : `<tr><td colspan="3" class="muted">보상 데이터가 없습니다.</td></tr>`
-            }
-          </tbody>
-        </table>
-      </div>
-    </section>
-  `;
-}
-
-// Search & filters
-qEl.addEventListener('input', (e) => { query = e.target.value || ''; render(); });
-pills.forEach(p => {
-  p.addEventListener('click', () => {
-    pills.forEach(x => x.classList.remove('active'));
-    p.classList.add('active');
-    filter = p.dataset.filter;
-    render();
-  });
-});
-
-// Modal close
-document.getElementById('closeModal').addEventListener('click', () => modal.classList.remove('open'));
-modal.addEventListener('click', (e) => { if(e.target === modal) modal.classList.remove('open'); });
-window.addEventListener('keydown', (e) => { if(e.key === 'Escape') modal.classList.remove('open'); });
-
-// Nav collapse
-const collapseBtn = document.getElementById('collapseNav');
-let navCollapsed = false;
-collapseBtn.addEventListener('click', () => {
-  navCollapsed = !navCollapsed;
-  document.querySelector('.nav').style.display = navCollapsed ? 'none' : 'block';
-  collapseBtn.textContent = navCollapsed ? '펼치기' : '접기';
-});
-
-async function loadIsland(id, file){
-  try{
+  async function loadIsland(id, file){
     selectedId = id;
-    const res = await fetch(urlJoin('data/' + file), {cache:'no-store'});
-    DATA = await res.json();
-    // set page title/sub for convenience
-    const loc = (DATA.locations||[])[0];
-    if(loc){
-      document.getElementById('pageTitle').textContent = MANIFEST.meta?.title || '섬/대륙 보상표 (데이터형)';
-      document.getElementById('pageSub').textContent = `${loc.name} · ${loc.group} · ${loc.points}P · ${loc.time}`;
-    }
-    render();
-  }catch(err){
-    try{
-      const root = (typeof ROOT !== 'undefined') ? ROOT.toString() : '(no ROOT)';
-      const u1 = (typeof urlJoin === 'function') ? urlJoin('data/manifest.json') : '(no urlJoin)';
-      const u2 = (typeof urlJoin === 'function') ? urlJoin('manifest.json') : '(no urlJoin)';
-      showDebug([
-        'location.href = ' + location.href,
-        'ROOT = ' + root,
-        'manifest (data/) = ' + u1,
-        'manifest (root) = ' + u2,
-        'error = ' + (err && (err.stack || err.message || err)) 
-      ]);
-    }catch(e){}
-    contentEl.innerHTML = `<div class="card"><div class="card-head"><div class="card-title"><div class="h">로드 실패</div><div class="s muted">${esc(err?.message||err)}</div></div></div></div>`;
-  }
-}
+    try {
+      const res = await fetch(urlJoin('data/' + file) + '?v=' + Date.now(), { cache:'no-store' });
+      if(!res.ok) throw new Error('섬 JSON HTTP ' + res.status);
+      const j = await res.json();
+      const loc = j.location || (j.locations||[])[0];
+      if(!loc) throw new Error('location 데이터가 비어있음');
 
-async function boot(){
-  try{
-    let res = await fetch(urlJoin('data/manifest.json'), {cache:'no-store'});
-    if(!res.ok){
-      // fallback: in case you placed manifest in repo root
-    let res = await fetch(urlJoin('manifest.json'), {cache:'no-store'});
-    }
-    if(!res.ok){
-      throw new Error(`manifest.json HTTP ${res.status}`);
-    }
-    MANIFEST = await res.json();
-    document.getElementById('pageTitle').textContent = MANIFEST.meta?.title || '섬/대륙 보상표 (데이터형)';
-    document.getElementById('pageSub').textContent = (MANIFEST.meta?.notes || '목차에서 항목 선택 → 해당 JSON 로드');
-    render();
-  }catch(err){
-    contentEl.innerHTML = `
-      <div class="card">
-        <div class="card-head">
-          <div class="card-title">
-            <div class="h">로드 실패</div>
-            <div class="s muted">manifest.json을 읽지 못했습니다. (경로/업로드 확인 필요)</div>
-          </div>
+      contentTitle.textContent = loc.name + ' 보상표';
+      contentMeta.textContent = `${loc.group} · ${loc.points}P · ${loc.time}`;
+
+      // rewards table
+      const rewards = loc.rewards || [];
+      let table = '<div class="muted">보상 데이터가 없습니다.</div>';
+      if(rewards.length){
+        const headers = Object.keys(rewards[0]);
+        table = `
+          <table class="table">
+            <thead><tr>${headers.map(h=>`<th>${esc(h)}</th>`).join('')}</tr></thead>
+            <tbody>
+              ${rewards.map(r => `<tr>${headers.map(h => `<td>${esc(r[h])}</td>`).join('')}</tr>`).join('')}
+            </tbody>
+          </table>
+        `;
+      }
+      contentBody.innerHTML = `
+        <div class="row" style="margin-bottom:10px;">
+          <span class="badge">id: ${esc(loc.id)}</span>
+          <span class="badge">그룹: ${esc(loc.group)}</span>
         </div>
-        <div style="padding:14px;color:rgba(255,255,255,.85);line-height:1.6">
-          <div class="muted">에러: ${esc(err?.message || err)}</div>
-        </div>
-      </div>
-    `;
+        ${table}
+      `;
+    } catch (err) {
+      contentTitle.textContent = '로드 실패';
+      contentMeta.textContent = '';
+      contentBody.innerHTML = `<div class="muted">에러: ${esc(err.message || err)}</div>
+        <div class="muted" style="margin-top:8px;">확인: <code>${esc(urlJoin('data/' + file))}</code></div>`;
+    }
   }
-}
 
-// ===== DEBUG PANEL (on failure) =====
-const __safeEsc = (s)=> String(s).replace(/[&<>"']/g, c=>({ "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;" }[c]));
-function showDebug(lines){
-  try{
-    const p = document.getElementById('debugPanel');
-    const b = document.getElementById('debugBody');
-    const c = document.getElementById('debugClose');
-    if(!p || !b) return;
-    b.innerHTML = lines.map(s => `<div style="margin:3px 0;white-space:pre-wrap;word-break:break-word;">${__safeEsc(s)}</div>`).join('');
-    p.style.display = 'block';
-    if(c) c.onclick = ()=> p.style.display='none';
-  }catch(e){}
-}
+  async function boot(){
+    try {
+      const res = await fetch(urlJoin('data/manifest.json') + '?v=' + Date.now(), { cache:'no-store' });
+      if(!res.ok) throw new Error('manifest HTTP ' + res.status);
+      MANIFEST = await res.json();
 
-boot();
+      // page title/sub
+      document.getElementById('pageTitle').textContent = MANIFEST.meta?.title || '맛동산';
+      document.getElementById('pageSub').textContent = MANIFEST.meta?.notes || '목차에서 항목 선택 → 해당 JSON 로드';
+
+      renderGroups();
+      renderNav();
+
+      // wire search/filter
+      qEl.addEventListener('input', () => { query = qEl.value; renderNav(); });
+      gfEl.addEventListener('change', () => { groupFilter = gfEl.value; renderNav(); });
+
+      // auto-open first item
+      const first = (MANIFEST.locations||[])[0];
+      if(first) {
+        await loadIsland(first.id, first.file);
+        renderNav();
+      }
+    } catch (err) {
+      contentTitle.textContent = 'manifest 로드 실패';
+      contentBody.innerHTML = `
+        <div class="muted">에러: ${esc(err.message || err)}</div>
+        <div class="muted" style="margin-top:8px;">확인 URL:</div>
+        <ul style="margin:6px 0 0 18px; color:rgba(255,255,255,.82)">
+          <li><code>${esc(urlJoin('data/manifest.json'))}</code></li>
+        </ul>
+      `;
+    }
+  }
+  boot();
 </script>
 </body>
 </html>

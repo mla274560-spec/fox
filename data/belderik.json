@@ -1,8 +1,7 @@
 {
   "meta": {
     "title": "벨데릭",
-    "updated": "2026-02-14",
-    "notes": "  "
+    "updated": "2026-02-14"
   },
   "groups": [
     {
@@ -30,41 +29,39 @@
       "default_time": "48시간"
     }
   ],
-  "locations": [
-    {
-      "id": "belderik",
-      "name": "벨데릭",
-      "group": "소형 섬",
-      "points": 850,
-      "time": "4시간 5분",
-      "icon": "assets/icons/belderik.png",
-      "rewards": [
-        {
-          "item": "스태미나 드링크 I (거래 불가)",
-          "qty": 1,
-          "prob": "40%"
-        },
-        {
-          "item": "스태미나 드링크 II (거래 불가)",
-          "qty": 1,
-          "prob": "30%"
-        },
-        {
-          "item": "스태미나 드링크 III (거래 불가)",
-          "qty": 1,
-          "prob": "15%"
-        },
-        {
-          "item": "스태미나 드링크 IV (거래 불가)",
-          "qty": 1,
-          "prob": "10%"
-        },
-        {
-          "item": "스태미나 드링크 V (거래 불가)",
-          "qty": 1,
-          "prob": "5%"
-        }
-      ]
-    }
-  ]
+  "location": {
+    "id": "belderik",
+    "name": "벨데릭",
+    "group": "소형 섬",
+    "points": 850,
+    "time": "4시간 5분",
+    "icon": "assets/icons/belderik.png",
+    "rewards": [
+      {
+        "item": "스태미나 드링크 I (거래 불가)",
+        "qty": 1,
+        "prob": "40%"
+      },
+      {
+        "item": "스태미나 드링크 II (거래 불가)",
+        "qty": 1,
+        "prob": "30%"
+      },
+      {
+        "item": "스태미나 드링크 III (거래 불가)",
+        "qty": 1,
+        "prob": "15%"
+      },
+      {
+        "item": "스태미나 드링크 IV (거래 불가)",
+        "qty": 1,
+        "prob": "10%"
+      },
+      {
+        "item": "스태미나 드링크 V (거래 불가)",
+        "qty": 1,
+        "prob": "5%"
+      }
+    ]
+  }
 }

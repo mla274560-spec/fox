@@ -311,27 +311,27 @@
       <div class="nav" id="nav"></div>
     </aside>
 
-    <main class="content" id="content">
-
-    <!-- 골드 계산기 -->
-    <section class="card" id="goldCalcSection" style="display:none;">
-      <div class="card-head">
-        <div class="card-title">
-          <div class="h">골드 보내기 계산기</div>
-          <div class="s muted">입력 즉시 수수료 5% 자동 계산</div>
+    <main class="content">
+      <!-- 계산기 섹션 (render가 건드리지 않음) -->
+      <section class="card" id="goldCalcSection" style="display:none;">
+        <div class="card-head">
+          <div class="card-title">
+            <div class="h">골드 보내기 계산기</div>
+            <div class="s muted">입력 즉시 수수료 5% 자동 계산</div>
+          </div>
         </div>
-      </div>
-      <div style="padding:18px;max-width:420px;">
-        <label class="muted">보낼 골드</label>
-        <input type="number" id="goldInput" 
-          style="width:100%;margin-top:8px;padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.05);color:white;font-size:15px;">
-        <div style="margin-top:18px;">
-          <div>수수료 (5%) : <b id="feeAmount">0</b></div>
-          <div style="margin-top:6px;">받는 골드 : <b id="finalAmount">0</b></div>
+        <div style="padding:18px;max-width:420px;">
+          <label class="muted">보낼 골드</label>
+          <input type="number" id="goldInput"
+            style="width:100%;margin-top:8px;padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.05);color:white;font-size:15px;">
+          <div style="margin-top:18px;">
+            <div>수수료 (5%) : <b id="feeAmount">0</b></div>
+            <div style="margin-top:6px;">받는 골드 : <b id="finalAmount">0</b></div>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
 
+      <div id="content">
       <div class="card">
         <div class="card-head">
           <div class="card-title">
@@ -632,6 +632,7 @@ async function boot(){
   }
 }
 boot();
+
 
 // ===== 계산기 탭 기능 =====
 document.addEventListener('DOMContentLoaded', () => {

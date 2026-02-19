@@ -1,0 +1,95 @@
+{
+  "meta": {
+    "title": "아르세아",
+    "updated": "2026-02-14",
+    "notes": "  "
+  },
+  "groups": [
+    {
+      "key": "소형 섬",
+      "label": "소형 섬",
+      "default_points": 850,
+      "default_time": "4시간 5분"
+    },
+    {
+      "key": "중형 섬",
+      "label": "중형 섬",
+      "default_points": 5000,
+      "default_time": "12시간"
+    },
+    {
+      "key": "일반 대륙",
+      "label": "일반 대륙",
+      "default_points": 14000,
+      "default_time": "24시간"
+    },
+    {
+      "key": "대형 대륙",
+      "label": "대형 대륙",
+      "default_points": 30000,
+      "default_time": "48시간"
+    }
+  ],
+  "locations": [
+    {
+      "id": "arsea",
+      "name": "아르세아",
+      "group": "일반 대륙",
+      "points": 14000,
+      "time": "24시간",
+      "icon": "assets/icons/arsea.png",
+      "rewards": [
+        {
+          "item": "스킬 아크 (x10)",
+          "qty": 1,
+          "prob": "25%"
+        },
+        {
+          "item": "전설 열쇠",
+          "qty": 3,
+          "prob": "25%"
+        },
+        {
+          "item": "투시 인챈트북 (20%)",
+          "qty": 1,
+          "prob": "8%"
+        },
+        {
+          "item": "노련한 손길 인챈트북 (20%)",
+          "qty": 1,
+          "prob": "8%"
+        },
+        {
+          "item": "가속화 인챈트북 (20%)",
+          "qty": 1,
+          "prob": "8%"
+        },
+        {
+          "item": "서두름 인챈트북 (20%)",
+          "qty": 1,
+          "prob": "8%"
+        },
+        {
+          "item": "완벽한 착지 인챈트북 (20%)",
+          "qty": 1,
+          "prob": "8%"
+        },
+        {
+          "item": "견고함 인챈트북 (20%)",
+          "qty": 1,
+          "prob": "8%"
+        },
+        {
+          "item": "봉인된 해풍의 나비 (거래 불가)",
+          "qty": 1,
+          "prob": "1%"
+        },
+        {
+          "item": "봉인된 추락한 날개의 펜던트 (거래 불가)",
+          "qty": 1,
+          "prob": "1%"
+        }
+      ]
+    }
+  ]
+}

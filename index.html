@@ -271,78 +271,6 @@
   font-weight: 700;
 }
 
-
-    /* ===== 상단 탭 (위키/계산기) ===== */
-    .mode-tabs{
-      position:sticky;
-      top:64px; /* topbar 높이에 맞춤(대략) */
-      z-index:49;
-      backdrop-filter:blur(14px);
-      background:rgba(11,15,23,.72);
-      border-bottom:1px solid var(--border);
-    }
-    .mode-tabs-inner{
-      max-width:var(--max);
-      margin:0 auto;
-      padding:10px 18px;
-      display:flex;
-      gap:10px;
-      align-items:center;
-    }
-    .mode-tab{
-      padding:9px 14px;
-      border-radius:999px;
-      border:1px solid var(--border);
-      background:var(--panel);
-      color:rgba(255,255,255,.88);
-      font-size:13px;
-      font-weight:800;
-      cursor:pointer;
-      user-select:none;
-      transition: transform .25s ease, opacity .25s ease, background .25s ease, border-color .25s ease;
-    }
-    .mode-tab:hover{background:var(--panel2)}
-    .mode-tab.active{
-      background:rgba(99,102,241,.22);
-      border-color:rgba(99,102,241,.45);
-    }
-
-    /* ===== 계산기 전용 컨테이너 ===== */
-    #calcOnlyWrap{
-      max-width:var(--max);
-      margin:0 auto;
-      padding:18px;
-      display:none;
-    }
-    #calcOnlyWrap .card{max-width:720px;margin:0 auto}
-    #calcOnlyWrap input{
-      width:100%;
-      margin-top:10px;
-      padding:14px 16px;
-      border-radius:14px;
-      border:1px solid rgba(255,255,255,.18);
-      background:rgba(255,255,255,.06);
-      color:var(--text);
-      font-size:16px;
-      outline:none;
-    }
-
-    /* ===== 모드 전환 애니메이션 + 배경 ===== */
-    body.calc-mode{
-      background: radial-gradient(1200px 600px at 50% -10%, #1e1b4b 0%, #0b0f17 60%) fixed;
-      transition: background .5s ease;
-    }
-    body.calc-mode .layout{display:none;}
-    body.calc-mode #calcOnlyWrap{display:block;}
-
-    .fade-in{
-      animation: fadeInUp .32s ease both;
-    }
-    @keyframes fadeInUp{
-      from{opacity:0; transform: translateY(10px);}
-      to{opacity:1; transform: translateY(0);}
-    }
-
 </style>
 </head>
 <body>
@@ -362,34 +290,6 @@
       <div class="pill" data-filter="일반 대륙">일반</div>
       <div class="pill" data-filter="대형 대륙">대형</div>
     </div>
-  </div>
-
-  <div class="mode-tabs" id="modeTabs">
-    <div class="mode-tabs-inner">
-      <div class="mode-tab active" id="tabWiki">항해 위키</div>
-      <div class="mode-tab" id="tabCalc">골드 계산기</div>
-    </div>
-  </div>
-
-  <!-- 계산기 전용 화면 (위키 렌더와 독립) -->
-  <div id="calcOnlyWrap">
-    <section class="card fade-in" id="goldCalcCard">
-      <div class="card-head">
-        <div class="card-title">
-          <div class="h">💰 골드 보내기 계산기</div>
-          <div class="s muted">입력 즉시 수수료 5% 자동 계산</div>
-        </div>
-        <span class="badge">수수료 5%</span>
-      </div>
-      <div style="padding:18px;max-width:520px;">
-        <label class="muted">보낼 골드</label>
-        <input type="number" id="goldInput" placeholder="예: 100000" inputmode="numeric" />
-        <div style="margin-top:18px;">
-          <div style="font-size:15px;">수수료 (5%) : <b id="feeAmount" style="color:#f87171;">0</b></div>
-          <div style="margin-top:8px;font-size:18px;font-weight:900;">받는 골드 : <b id="finalAmount" style="color:#34d399;">0</b></div>
-        </div>
-      </div>
-    </section>
   </div>
 
   <div class="layout">
@@ -439,9 +339,13 @@
   </div>
 
 <script>
+let MANIFEST = null;
 let DATA = null;
-let filter = 'all';
-let query = '';
+/* filter moved to top */
+/* query moved to top */
+let selectedId = null;
+/* filter moved to top */
+/* query moved to top */
 
 const navEl = document.getElementById('nav');
 const contentEl = document.getElementById('content');
@@ -461,16 +365,17 @@ function probToNum(p){
 }
 
 function matchLocation(loc){
-  const hay = (loc.name + ' ' + loc.group + ' ' + (loc.rewards||[]).map(r=>r.item).join(' ')).toLowerCase();
+  const hay = (loc.name + ' ' + loc.group).toLowerCase();
   const q = query.trim().toLowerCase();
   const okQ = !q || hay.includes(q);
-  const okF = (filter === 'all') || loc.group.includes(filter);
+  const okF = (filter === 'all') || (loc.group || '').includes(filter);
   return okQ && okF;
 }
 
 function render(){
-  if(!DATA) return;
-  const shown = (DATA.locations||[]).filter(matchLocation);
+  if(!MANIFEST) return;
+
+  const shown = (MANIFEST.locations||[]).filter(matchLocation);
 
   // --- NAV (folder-style) ---
   const navEmpty = `<div style="padding:12px;color:rgba(255,255,255,.7)">검색 결과가 없어요.</div>`;
@@ -485,7 +390,7 @@ function render(){
       </button>
       <div class="nav-folder-items">
         ${shown.map(loc => `
-          <a href="#${loc.id}" data-id="${loc.id}" class="nav-item">
+          <a href="#top" data-id="${loc.id}" data-file="${loc.file}" class="nav-item">
             ${loc.icon ? `<img class="nav-thumb" src="${loc.icon}" alt="${esc(loc.name)}" loading="lazy" />` : `<div class="nav-thumb placeholder"></div>`}
             <div class="meta">
               <div class="name">${esc(loc.name)}</div>
@@ -496,7 +401,8 @@ function render(){
       </div>
     </div>
   ` : navEmpty;
-  // Folder toggle (must be wired after nav HTML is rendered)
+
+  // Folder toggle wiring
   const folder = navEl.querySelector('[data-folder="sailing"]');
   if (folder) {
     const btn = folder.querySelector('.nav-folder-btn');
@@ -511,84 +417,78 @@ function render(){
     }
   }
 
+  // Nav item click: load the selected json
+  Array.from(navEl.querySelectorAll('a.nav-item[data-file]')).forEach(a => {
+    a.addEventListener('click', async (e) => {
+      e.preventDefault();
+      const id = a.dataset.id;
+      const file = a.dataset.file;
+      await loadIsland(id, file);
+      // active highlight
+      Array.from(navEl.querySelectorAll('a.nav-item')).forEach(x => x.classList.remove('active'));
+      a.classList.add('active');
+    });
+  });
 
-  const summaryRows = (DATA.locations||[]).map(loc => ({
-    group: loc.group, name: loc.name, points: loc.points, time: loc.time
-  }));
+  // Content: if none selected, show 안내 카드
+  if(!selectedId || !DATA){
+    contentEl.innerHTML = `
+      <section class="card" id="summary">
+        <div class="card-head">
+          <div class="card-title">
+            <div class="h">항해 위키</div>
+            <div class="s muted">왼쪽 목차에서 대륙/섬을 선택하면 보상표가 열립니다.</div>
+          </div>
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <span class="badge">업데이트: ${esc(MANIFEST.meta?.updated || '')}</span>
+            <span class="badge">항목 수: ${(MANIFEST.locations||[]).length}</span>
+          </div>
+        </div>
+        <div style="padding:14px;color:rgba(255,255,255,.85);line-height:1.7">
+          <div class="muted">검색/필터는 목차 목록에 적용됩니다.</div>
+        </div>
+      </section>
+    `;
+    return;
+  }
 
-  // Summary card + location cards
+  // Render selected location only
+  const loc = (DATA.locations||[])[0];
   contentEl.innerHTML = `
     <section class="card" id="summary">
       <div class="card-head">
         <div class="card-title">
-          <div class="h">개요</div>
-          <div class="s muted">분류 · 필요 포인트 · 소요 시간</div>
+          <div class="h">${esc(loc.name)} 보상표</div>
+          <div class="s muted">${esc(loc.group)} · ${esc(loc.points)}P · ${esc(loc.time)}</div>
         </div>
         <div style="display:flex; gap:10px; flex-wrap:wrap;">
-          <span class="badge">업데이트: ${esc(DATA.meta?.updated || '')}</span>
-          <span class="badge">항목 수: ${summaryRows.length}</span>
+          <span class="badge">업데이트: ${esc(MANIFEST.meta?.updated || '')}</span>
           <a class="btn" href="#top" onclick="window.scrollTo({top:0,behavior:'smooth'}); return false;">맨 위</a>
         </div>
       </div>
-      <div style="padding:14px; overflow:auto;">
-        <table>
-          <thead>
-            <tr>
-              <th style="min-width:110px;">분류</th>
-              <th style="min-width:140px;">대륙/섬</th>
-              <th style="min-width:110px;">필요 포인트</th>
-              <th style="min-width:110px;">소요 시간</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${summaryRows.map(r => `
-              <tr>
-                <td>${esc(r.group)}</td>
-                <td><a href="#${(DATA.locations||[]).find(x=>x.name===r.name)?.id || ''}" style="text-decoration:underline;text-decoration-color:rgba(255,255,255,.25)">${esc(r.name)}</a></td>
-                <td>${esc(r.points)}</td>
-                <td>${esc(r.time)}</td>
-              </tr>
-            `).join('')}
-          </tbody>
-        </table>
+      <div style="padding:14px;color:rgba(255,255,255,.85);line-height:1.7">
+        <div class="muted">왼쪽에서 다른 항목을 선택하면 해당 항목의 JSON을 불러옵니다.</div>
       </div>
     </section>
-    ${shown.map(loc => locationCard(loc)).join('')}
+    ${locationCard(loc)}
   `;
 
-  // Zoom wiring
+  // Zoom wiring (works for the single loc)
   Array.from(document.querySelectorAll('[data-zoom]')).forEach(btn => {
     btn.addEventListener('click', () => {
       const id = btn.getAttribute('data-zoom');
-      const loc = (DATA.locations||[]).find(x => x.id === id);
-      if(!loc) return;
-      const src = loc.icon || '';
-      modalTitle.textContent = `${loc.name} · ${loc.group}`;
+      const locx = (DATA.locations||[]).find(x => x.id === id);
+      if(!locx) return;
+      const src = locx.icon || '';
+      modalTitle.textContent = `${locx.name} · ${locx.group}`;
       modalImg.src = src;
       openNew.href = src;
       modal.classList.add('open');
     });
   });
-
-  // Active nav highlight on scroll
-  const links = Array.from(navEl.querySelectorAll('a'));
-  const byId = new Map(links.map(a => [a.dataset.id, a]));
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if(e.isIntersecting){
-        links.forEach(x => x.classList.remove('active'));
-        const a = byId.get(e.target.id);
-        if(a) a.classList.add('active');
-      }
-    });
-  }, { rootMargin: '-45% 0px -50% 0px', threshold: 0.01 });
-
-  shown.forEach(loc => {
-    const sec = document.getElementById(loc.id);
-    if(sec) observer.observe(sec);
-  });
 }
-  // Folder toggle
+
+// Folder toggle
   const folder = navEl.querySelector('[data-folder="sailing"]');
   if(folder){
     const btn = folder.querySelector('.nav-folder-btn');
@@ -621,6 +521,7 @@ function locationCard(loc){
           <div class="h">${esc(loc.name)}</div>
           <div class="s muted">${esc(loc.group)} · ${esc(loc.points)}P · ${esc(loc.time)}</div>
         </div>
+        ${loc.icon ? `<div class="btn" data-zoom="${loc.id}" title="아이콘 확대">이미지</div>` : ``}
       </div>
 
       <div style="padding:14px; overflow:auto;">
@@ -676,12 +577,29 @@ collapseBtn.addEventListener('click', () => {
   collapseBtn.textContent = navCollapsed ? '펼치기' : '접기';
 });
 
+async function loadIsland(id, file){
+  try{
+    selectedId = id;
+    const res = await fetch('./data/' + file, {cache:'no-store'});
+    DATA = await res.json();
+    // set page title/sub for convenience
+    const loc = (DATA.locations||[])[0];
+    if(loc){
+      document.getElementById('pageTitle').textContent = MANIFEST.meta?.title || '섬/대륙 보상표 (데이터형)';
+      document.getElementById('pageSub').textContent = `${loc.name} · ${loc.group} · ${loc.points}P · ${loc.time}`;
+    }
+    render();
+  }catch(err){
+    contentEl.innerHTML = `<div class="card"><div class="card-head"><div class="card-title"><div class="h">로드 실패</div><div class="s muted">${esc(err?.message||err)}</div></div></div></div>`;
+  }
+}
+
 async function boot(){
   try{
-    const res = await fetch('./data.json', {cache:'no-store'});
-    DATA = await res.json();
-    document.getElementById('pageTitle').textContent = DATA.meta?.title || '섬/대륙 보상표 (데이터형)';
-    document.getElementById('pageSub').textContent = (DATA.meta?.notes || 'data.json 수정 → 자동 반영');
+    const res = await fetch('./data/manifest.json', {cache:'no-store'});
+    MANIFEST = await res.json();
+    document.getElementById('pageTitle').textContent = MANIFEST.meta?.title || '섬/대륙 보상표 (데이터형)';
+    document.getElementById('pageSub').textContent = (MANIFEST.meta?.notes || '목차에서 항목 선택 → 해당 JSON 로드');
     render();
   }catch(err){
     contentEl.innerHTML = `
@@ -689,15 +607,10 @@ async function boot(){
         <div class="card-head">
           <div class="card-title">
             <div class="h">로드 실패</div>
-            <div class="s muted">브라우저가 로컬 파일에서 JSON 로드를 막았을 수 있어요.</div>
+            <div class="s muted">manifest.json을 읽지 못했습니다.</div>
           </div>
         </div>
         <div style="padding:14px;color:rgba(255,255,255,.85);line-height:1.6">
-          <div>해결 방법 (추천):</div>
-          <ol>
-            <li><span class="k">VS Code</span> 설치 → Live Server 확장 설치 → index.html 우클릭 → <span class="k">Open with Live Server</span></li>
-            <li>또는 터미널에서 이 폴더로 이동 후: <span class="k">python -m http.server 8000</span> 실행 → 브라우저에서 <span class="k">http://localhost:8000</span></li>
-          </ol>
           <div class="muted">에러: ${esc(err?.message || err)}</div>
         </div>
       </div>
@@ -705,55 +618,6 @@ async function boot(){
   }
 }
 boot();
-
-// ===== 위키/계산기 모드 전환 =====
-(function(){
-  const tabWiki = document.getElementById('tabWiki');
-  const tabCalc = document.getElementById('tabCalc');
-  const calcWrap = document.getElementById('calcOnlyWrap');
-  const bodyRoot = document.body;
-
-  function setMode(mode){
-    if(mode === 'calc'){
-      tabCalc.classList.add('active');
-      tabWiki.classList.remove('active');
-      bodyRoot.classList.add('calc-mode');
-      // 애니메이션 리셋
-      const card = document.getElementById('goldCalcCard');
-      card.classList.remove('fade-in');
-      void card.offsetWidth; // reflow
-      card.classList.add('fade-in');
-      window.scrollTo({top:0,behavior:'smooth'});
-    }else{
-      tabWiki.classList.add('active');
-      tabCalc.classList.remove('active');
-      bodyRoot.classList.remove('calc-mode');
-      window.scrollTo({top:0,behavior:'smooth'});
-    }
-  }
-
-  tabWiki.addEventListener('click', ()=> setMode('wiki'));
-  tabCalc.addEventListener('click', ()=> setMode('calc'));
-
-  // 계산기 로직
-  const input = document.getElementById('goldInput');
-  input.addEventListener('input', function(){
-    const gold = parseFloat(this.value);
-    if(!Number.isFinite(gold) || gold <= 0){
-      document.getElementById('feeAmount').textContent = '0';
-      document.getElementById('finalAmount').textContent = '0';
-      return;
-    }
-    const fee = gold * 0.05;
-    const finalGold = gold - fee;
-    document.getElementById('feeAmount').textContent = fee.toLocaleString();
-    document.getElementById('finalAmount').textContent = finalGold.toLocaleString();
-  });
-
-  // 기본 모드는 위키
-  setMode('wiki');
-})();
-
 </script>
 </body>
 </html>

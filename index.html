@@ -208,8 +208,7 @@
     const hay = ((loc.name||'') + ' ' + (loc.group||'')).toLowerCase();
     const q = query.trim().toLowerCase();
     const okQ = !q || hay.includes(q);
-    const okG = (groupFilter === 'all') || (loc.group === groupFilter);
-    return okQ && okG;
+    return okQ;
   }
 
   function renderNav(){
@@ -237,11 +236,6 @@
         renderNav();
       });
     });
-  }
-
-  function renderGroups(){
-    const opts = ['all', ...(MANIFEST.groups||[]).map(g => g.key)];
-    gfEl.innerHTML = opts.map(v => `<option value="${esc(v)}">${esc(v === 'all' ? '전체' : v)}</option>`).join('');
   }
 
   async function loadIsland(id, file){
@@ -314,7 +308,6 @@
 
       // wire search/filter
       qEl.addEventListener('input', () => { query = qEl.value; renderNav(); });
-      gfEl.addEventListener('change', () => { groupFilter = gfEl.value; renderNav(); });
 
       // auto-open first item
       const first = (MANIFEST.locations||[])[0];

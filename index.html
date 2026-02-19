@@ -595,7 +595,7 @@ async function loadIsland(id, file){
     selectedId = id;
     const res = await fetch(urlJoin('data/' + file) + '?v=' + Date.now(), { cache: 'no-store' });
     DATA = await res.json();
-    // set page title/sub for convenience
+
     const loc = (DATA.locations||[])[0];
     if(loc){
       document.getElementById('pageTitle').textContent = MANIFEST.meta?.title || '섬/대륙 보상표 (데이터형)';
@@ -609,14 +609,14 @@ async function loadIsland(id, file){
 
 async function boot(){
   try{
-    res = await fetch(urlJoin('data/manifest.json') + '?v=' + Date.now(), { cache: 'no-store' });
+    let res = await fetch(urlJoin('data/manifest.json') + '?v=' + Date.now(), { cache: 'no-store' });
     if(!res.ok){
-      // fallback: in case you placed manifest in repo root
-      res = await fetch(urlJoin('manifest.json'), {cache:'no-store'});
+      res = await fetch(urlJoin('manifest.json') + '?v=' + Date.now(), { cache:'no-store' });
     }
     if(!res.ok){
       throw new Error(`manifest.json HTTP ${res.status}`);
     }
+
     MANIFEST = await res.json();
     document.getElementById('pageTitle').textContent = MANIFEST.meta?.title || '섬/대륙 보상표 (데이터형)';
     document.getElementById('pageSub').textContent = (MANIFEST.meta?.notes || '목차에서 항목 선택 → 해당 JSON 로드');

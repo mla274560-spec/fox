@@ -105,7 +105,7 @@
           </div>
           <div class="body grid" style="gap:10px;">
             <input id="q" class="input" placeholder="검색: 라비온, 케로아..." />
-            <select id="groupFilter" class="input"></select>
+            
           </div>
           <div class="nav-list" id="nav"></div>
         </aside>
@@ -163,6 +163,7 @@
 
   const navEl = document.getElementById('nav');
   const qEl = document.getElementById('q');
+  
   const countBadge = document.getElementById('countBadge');
 
   const contentTitle = document.getElementById('contentTitle');
@@ -238,6 +239,7 @@
     });
   }
 
+  
   async function loadIsland(id, file){
     selectedId = id;
     try {
@@ -254,30 +256,16 @@
       const rewards = loc.rewards || [];
       let table = '<div class="muted">보상 데이터가 없습니다.</div>';
       if(rewards.length){
-  const headers = Object.keys(rewards[0]);
-
-  const headerMap = {
-    item: "아이템",
-    qty: "수량",
-    prob: "확률"
-  };
-
-  table = `
-    <table class="table">
-      <thead>
-        <tr>
-          ${headers.map(h => `<th>${esc(headerMap[h] || h)}</th>`).join('')}
-        </tr>
-      </thead>
-      <tbody>
-        ${rewards.map(r =>
-          `<tr>${headers.map(h => `<td>${esc(r[h])}</td>`).join('')}</tr>`
-        ).join('')}
-      </tbody>
-    </table>
-  `;
-}
-
+        const headers = Object.keys(rewards[0]);
+        table = `
+          <table class="table">
+            <thead><tr>${headers.map(h=>`<th>${esc(h)}</th>`).join('')}</tr></thead>
+            <tbody>
+              ${rewards.map(r => `<tr>${headers.map(h => `<td>${esc(r[h])}</td>`).join('')}</tr>`).join('')}
+            </tbody>
+          </table>
+        `;
+      }
       contentBody.innerHTML = `
         <div class="row" style="margin-bottom:10px;">
           <span class="badge">id: ${esc(loc.id)}</span>
@@ -303,12 +291,12 @@
       document.getElementById('pageTitle').textContent = MANIFEST.meta?.title || '맛동산';
       document.getElementById('pageSub').textContent = MANIFEST.meta?.notes || '목차에서 항목 선택 → 해당 JSON 로드';
 
-      renderGroups();
+      
       renderNav();
 
       // wire search/filter
       qEl.addEventListener('input', () => { query = qEl.value; renderNav(); });
-
+      
       // auto-open first item
       const first = (MANIFEST.locations||[])[0];
       if(first) {
